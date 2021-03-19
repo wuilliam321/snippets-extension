@@ -1,0 +1,22 @@
+{
+  "name": "capijzo-extension",
+  "version": "1.0.0",
+  "description": "Extension",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wuilliam321/capijzo-extension.git"
+  },
+  "author": "Carlos Araque y Wuilliam Lacruz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wuilliam321/capijzo-extension/issues"
+  },
+  "homepage": "https://github.com/wuilliam321/capijzo-extension#readme",
+  "dependencies": {
+    "parcel-bundler": "^1.12.5"
+  }
+}

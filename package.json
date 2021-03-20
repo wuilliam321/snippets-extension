@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "dev": "parcel watch src/*.html --out-dir dist",
-        "test": "jest --watch",
+        "test": "jest",
         "build": "parcel build src/*.html --out-dir dist",
         "zip": "mkdir -p zip && zip -FSrj zip/open-stocks-multi-tabs-$npm_package_version-chrome.zip dist"
     },

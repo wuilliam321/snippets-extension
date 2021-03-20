@@ -9,7 +9,6 @@
         "build": "parcel build src/*.html --out-dir dist",
         "zip": "mkdir -p zip && zip -FSrj zip/open-stocks-multi-tabs-$npm_package_version-chrome.zip dist"
     },
-    "dependencies": {},
     "devDependencies": {
         "@types/chrome": "^0.0.132",
         "@types/jest": "^26.0.21",
@@ -19,8 +18,7 @@
         "parcel-plugin-static-files-copy": "^2.5.1"
     },
     "staticFiles": {
-        "staticPath": [
-            {
+        "staticPath": [{
                 "staticPath": "src/static"
             },
             {

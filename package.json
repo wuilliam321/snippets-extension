@@ -5,13 +5,15 @@
     "main": "index.js",
     "scripts": {
         "dev": "parcel watch src/*.html --out-dir dist",
+        "test": "jest",
         "build": "parcel build src/*.html --out-dir dist",
         "zip": "mkdir -p zip && zip -FSrj zip/open-stocks-multi-tabs-$npm_package_version-chrome.zip dist"
     },
-    "dependencies": {
-    },
+    "dependencies": {},
     "devDependencies": {
         "@types/chrome": "^0.0.132",
+        "@types/jest": "^26.0.21",
+        "jest": "^26.6.3",
         "parcel-bundler": "^1.12.4",
         "parcel-plugin-clean-dist": "^0.0.6",
         "parcel-plugin-static-files-copy": "^2.5.1"

@@ -18,7 +18,8 @@
         "parcel-plugin-static-files-copy": "^2.5.1"
     },
     "staticFiles": {
-        "staticPath": [{
+        "staticPath": [
+            {
                 "staticPath": "src/static"
             },
             {
@@ -29,5 +30,6 @@
         "watcherGlob": "**"
     },
     "dependencies": {
+        "axios": "^0.21.1"
     }
 }

@@ -27,5 +27,7 @@
         ],
         "distPath": "dist",
         "watcherGlob": "**"
+    },
+    "dependencies": {
     }
 }

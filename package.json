@@ -29,6 +29,5 @@
         "watcherGlob": "**"
     },
     "dependencies": {
-        "main": "^1000.0.1"
     }
 }

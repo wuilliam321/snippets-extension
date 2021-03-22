@@ -1,4 +1,4 @@
-const main = require('../src/main');
+import main from '../src/main';
 
 describe('Email Form Validation', () => {
     test('given an empty email, should return false', () => {

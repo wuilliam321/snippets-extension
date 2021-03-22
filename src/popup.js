@@ -1,5 +1,5 @@
-const axios = require('axios');
-const main = require('./main');
+import axios from 'axios';
+import main from './main';
 
 const formLogin = document.getElementById("form-login")
 

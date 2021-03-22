@@ -17,8 +17,8 @@ function isValidPassword(password) {
     return false;
 }
 
-module.exports = {
-    isFormValid,
-    isValidEmail,
-    isValidPassword,
-};
+export default {
+  isFormValid: isFormValid,
+  isValidEmail: isValidEmail,
+  isValidPassword: isValidPassword
+}

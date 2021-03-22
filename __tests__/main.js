@@ -1,4 +1,14 @@
-const main = require('../src/main');
+// import axios from 'axios';
+import main from '../src/main';
+
+// jest.mock('axios');
+
+// describe('Form Requests', () => {
+//     test('given invalid login data, should return error', () => {
+//         const result = doLogin(event);
+//         expect(result).toBe(false);
+//     });
+// });
 
 describe('Email Form Validation', () => {
     test('given an empty email, should return false', () => {

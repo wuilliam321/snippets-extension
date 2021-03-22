@@ -1,43 +1,43 @@
 {
-    "name": "capijzo-extension",
-    "version": "1.0.0",
-    "description": "Extension",
-    "main": "index.js",
-    "scripts": {
-        "dev": "parcel watch src/*.html --out-dir dist",
-        "test": "jest",
-        "test:watch": "jest --watch",
-        "build": "parcel build src/*.html --out-dir dist",
-        "zip": "mkdir -p zip && zip -FSrj zip/open-stocks-multi-tabs-$npm_package_version-chrome.zip dist"
-    },
-    "devDependencies": {
-        "@babel/core": "^7.13.10",
-        "@babel/preset-env": "^7.13.12",
-        "@types/chrome": "^0.0.132",
-        "@types/jest": "^26.0.21",
-        "jest": "^26.6.3",
-        "parcel-bundler": "^1.12.4",
-        "parcel-plugin-clean-dist": "^0.0.6",
-        "parcel-plugin-static-files-copy": "^2.5.1"
-    },
-    "staticFiles": {
-        "staticPath": [
-            {
-                "staticPath": "src/static"
-            },
-            {
-                "staticPath": "src/manifest/manifest.json"
-            }
-        ],
-        "distPath": "dist",
-        "watcherGlob": "**"
-    },
-    "dependencies": {
-        "axios": "^0.21.1"
-    },
-    "babel": {
-        "presets": [
-            "@babel/preset-env"
-        ]
-    }
+  "name": "capijzo-extension",
+  "version": "1.0.0",
+  "description": "Extension",
+  "main": "index.js",
+  "scripts": {
+    "dev": "parcel watch src/*.html --out-dir dist",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "build": "parcel build src/*.html --out-dir dist",
+    "zip": "mkdir -p zip && zip -FSrj zip/open-stocks-multi-tabs-$npm_package_version-chrome.zip dist"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.13.10",
+    "@babel/preset-env": "^7.13.12",
+    "@types/chrome": "^0.0.132",
+    "@types/jest": "^26.0.21",
+    "jest": "^26.6.3",
+    "parcel-bundler": "^1.12.4",
+    "parcel-plugin-clean-dist": "^0.0.6",
+    "parcel-plugin-static-files-copy": "^2.5.1"
+  },
+  "staticFiles": {
+    "staticPath": [
+      {
+        "staticPath": "src/static"
+      },
+      {
+        "staticPath": "src/manifest/manifest.json"
+      }
+    ],
+    "distPath": "dist",
+    "watcherGlob": "**"
+  },
+  "dependencies": {
+    "axios": "^0.21.1"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
+  }
 }

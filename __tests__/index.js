@@ -1,8 +1,8 @@
 /**
-  * This is just a sample test
-  *
-  * Change when we start working an the extension
-  */
+ * This is just a sample test
+ *
+ * Change when we start working an the extension
+ */
 function sum(a, b) {
   return a + b;
 }

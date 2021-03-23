@@ -31,9 +31,7 @@ describe('Login Form', () => {
     const result = form.isValidForm('algo espacio@.com', '12345');
     expect(result).toBe(false);
   });
-});
 
-describe('Pasword Form Validation', () => {
   test('given an empty password, should return false', () => {
     const result = form.isValidForm('a@a.com', '');
     expect(result).toBe(false);

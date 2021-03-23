@@ -16,6 +16,6 @@ const router = new VueRouter({
 Vue.use(VueRouter);
 
 new Vue({
-  render: createElement => createElement(App),
+  render: (createElement) => createElement(App),
   router,
 }).$mount('#app');

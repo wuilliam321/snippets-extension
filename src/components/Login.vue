@@ -45,6 +45,7 @@ export default Vue.extend({
         console.log('success', data);
 
         // guardar el token en la pc
+        // TODO: move to a storage.service.js storage.set('token', token);
         chrome.storage.sync.set({ data: data.access_token }, () => {
           console.log('data saved');
         });

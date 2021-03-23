@@ -45,9 +45,9 @@ export default Vue.extend({
         console.log('success', data);
 
         // guardar el token en la pc
-        // chrome.storage.sync.set({ data: data.data.access_token }, () => {
-        //   console.log(data.data.access_token);
-        // });
+        chrome.storage.sync.set({ data: data.access_token }, () => {
+          console.log('data saved');
+        });
         this.showError = false;
         this.$router.push('/dashboard');
       } catch (err) {

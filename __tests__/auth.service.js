@@ -1,9 +1,7 @@
 import axios from 'axios';
 import auth from '../src/lib/auth.service';
-import form from '../src/lib/login.form';
 
 jest.mock('axios');
-// axios.post.mockResolvedValue({ status: 401 });
 
 describe('Auth Service', () => {
   test('given invalid login data, should return 401', async () => {

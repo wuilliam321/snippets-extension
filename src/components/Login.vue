@@ -42,6 +42,7 @@ export default Vue.extend({
         //   console.log(data.data.access_token);
         // });
         this.showError = false;
+        this.$router.push('/dashboard');
       } catch (err) {
         console.log('error', err.status);
         this.showError = true;

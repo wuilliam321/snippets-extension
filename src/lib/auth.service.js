@@ -1,24 +1,5 @@
 import axios from 'axios';
 
-function isFormValid(email, password) {
-  const isValid = isValidEmail(email) && isValidPassword(password);
-  return isValid;
-}
-
-function isValidEmail(email) {
-  if (email && /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email)) {
-    return true;
-  }
-  return false;
-}
-
-function isValidPassword(password) {
-  if (password) {
-    return true;
-  }
-  return false;
-}
-
 async function login(email, password) {
   try {
     const url = 'https://app.capijzo.com/api/auth/login';
@@ -42,8 +23,5 @@ async function login(email, password) {
 }
 
 export default {
-  isFormValid: isFormValid,
-  isValidEmail: isValidEmail,
-  isValidPassword: isValidPassword,
   login: login,
 };

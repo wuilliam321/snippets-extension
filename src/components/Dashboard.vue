@@ -1,11 +1,17 @@
 <template>
+  <!-- Header -->
+  <!--   Profile -->
+  <!--   Add Button -->
+  <!-- Productivity Stats -->
+  <!--   Hours Saved -->
+  <!--   Typing Speed -->
+  <!--   Inserted Words -->
+  <!-- Footer -->
   <router-link to="/">Log out</router-link>
 </template>
 
 <script>
 import Vue from 'vue';
-import form from '../lib/login.form';
-import auth from '../lib/auth.service';
 
 export default Vue.extend({
   methods: {

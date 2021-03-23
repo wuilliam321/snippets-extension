@@ -1,4 +1,9 @@
 <template>
+  <!-- Header -->
+  <!--   Logo -->
+  <!--   Title -->
+  <!-- Social Login -->
+  <!-- Form Login -->
   <form @submit="doLogin">
     <label for="email">Email Address</label>
     <input type="text" v-model="email" name="email" />
@@ -7,6 +12,8 @@
     <p v-if="showError">Incorrect Email or Password</p>
     <input type="submit" value="Log in" />
   </form>
+  <!-- Forgot Password -->
+  <!-- New Account -->
 </template>
 
 <script>

@@ -54,17 +54,14 @@ export default Vue.extend({
       try {
         const data = await auth.login(this.email, this.password);
         // mostrar el dashboard con el boton logout, (no quiero el form)
-        console.log('success', data);
 
         // guardar el token en la pc
         // TODO: move to a storage.service.js storage.set('token', token);
-        chrome.storage.sync.set({ data: data.access_token }, () => {
-          console.log('data saved');
+        chrome.storage.sync.set({ access_token: data.access_token }, () => {
         });
         this.$router.push('/dashboard');
         this.isLoading = false;
       } catch (err) {
-        console.log('error', err.status);
         this.showError = true;
         this.isLoading = false;
       }

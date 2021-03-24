@@ -5,17 +5,29 @@ import Login from './components/Login.vue';
 import Dashboard from './components/Dashboard.vue';
 
 const routes = [
-  { path: '/', component: Login },
-  { path: '/dashboard', component: Dashboard },
+    { name: 'login', path: '/', component: Login },
+    { name: 'dashboard', path: '/dashboard', component: Dashboard },
 ];
 
 const router = new VueRouter({
-  routes,
+    routes,
 });
+
+router.beforeEach((to, from, next) => {
+    chrome.storage.sync.get(['access_token'], function(result) {
+        console.log('Value currently is ' + result.access_token);
+        if (to.name === 'login' && result.access_token) {
+            next({ name: 'dashboard' });
+        } else {
+            next();
+        }
+    });
+});
+
 
 Vue.use(VueRouter);
 
 new Vue({
-  render: (createElement) => createElement(App),
-  router,
+    render: (createElement) => createElement(App),
+    router,
 }).$mount('#app');

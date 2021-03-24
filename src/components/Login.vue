@@ -43,6 +43,7 @@ export default Vue.extend({
     async doLogin(event) {
       event.preventDefault();
       this.isLoading = true;
+      this.showError = false;
 
       if (!form.isValidForm(this.email, this.password)) {
         this.showError = true;
@@ -60,7 +61,6 @@ export default Vue.extend({
         chrome.storage.sync.set({ data: data.access_token }, () => {
           console.log('data saved');
         });
-        this.showError = false;
         this.$router.push('/dashboard');
         this.isLoading = false;
       } catch (err) {

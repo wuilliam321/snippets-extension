@@ -16,6 +16,7 @@
       <Loader></Loader>
     </template>
     <input type="submit" value="Log in" :disabled="isLoading" />
+    <p>New Here? <a href="https://app.capijzo.com/register" target="_blank">Create Account</a></p>
   </form>
   <!-- Forgot Password -->
   <!-- New Account -->

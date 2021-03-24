@@ -6,11 +6,16 @@
   <!-- Form Login -->
   <form @submit="doLogin">
     <label for="email">Email Address</label>
-    <input type="text" v-model="email" name="email" />
+    <input type="text" v-model="email" name="email" :disabled="isLoading" />
     <label for="password">Password</label>
-    <input type="password" v-model="password" name="password" />
-    <p v-if="showError">Incorrect Email or Password</p>
-    <input type="submit" value="Log in" />
+    <input type="password" v-model="password" name="password" :disabled="isLoading" />
+    <template v-if="showError">
+      <p>Incorrect Email or Password</p>
+    </template>
+    <template v-if="isLoading">
+      <Loader></Loader>
+    </template>
+    <input type="submit" value="Log in" :disabled="isLoading" />
   </form>
   <!-- Forgot Password -->
   <!-- New Account -->
@@ -18,20 +23,26 @@
 
 <script>
 import Vue from 'vue';
+import Loader from './Loader.vue';
 import form from '../lib/login.form';
 import auth from '../lib/auth.service';
 
 export default Vue.extend({
+  components: {
+    Loader,
+  },
   data() {
     return {
       email: '',
       password: '',
       showError: false,
+      isLoading: false,
     };
   },
   methods: {
     async doLogin(event) {
       event.preventDefault();
+      this.isLoading = true;
 
       if (!form.isValidForm(this.email, this.password)) {
         this.showError = true;
@@ -51,9 +62,11 @@ export default Vue.extend({
         });
         this.showError = false;
         this.$router.push('/dashboard');
+        this.isLoading = false;
       } catch (err) {
         console.log('error', err.status);
         this.showError = true;
+        this.isLoading = false;
       }
     },
   },

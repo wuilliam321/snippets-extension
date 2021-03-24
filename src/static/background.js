@@ -1,3 +1,3 @@
 chrome.runtime.onInstalled.addListener(() => {
-  console.log('Welcome');
+    chrome.tabs.create({ url: "https://app.capijzo.com/register" });
 });

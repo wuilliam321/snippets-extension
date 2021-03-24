@@ -16,6 +16,7 @@
       <Loader></Loader>
     </template>
     <input type="submit" value="Log in" :disabled="isLoading" />
+    <!-- <button type="button" @click="testPost">Test Message</button> -->
   </form>
   <!-- Forgot Password -->
   <!-- New Account -->
@@ -24,8 +25,8 @@
 <script>
 import Vue from 'vue';
 import Loader from './Loader.vue';
-import form from '../lib/login.form';
-import auth from '../lib/auth.service';
+import validator from '../core/validator';
+import api from '../core/api';
 
 export default Vue.extend({
   components: {
@@ -40,19 +41,25 @@ export default Vue.extend({
     };
   },
   methods: {
+//    testPost() {
+//      console.log('llamando testPost');
+//      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+//        chrome.tabs.sendMessage(tabs[0].id, { action: 'open_dialog_box' }, function (response) {});
+//      });
+//    },
     async doLogin(event) {
       event.preventDefault();
       this.isLoading = true;
       this.showError = false;
 
-      if (!form.isValidForm(this.email, this.password)) {
+      if (!validator.isValidForm(this.email, this.password)) {
         this.showError = true;
         return;
       }
 
       // hacer POST al login
       try {
-        const data = await auth.login(this.email, this.password);
+        const data = await api.login(this.email, this.password);
         // mostrar el dashboard con el boton logout, (no quiero el form)
         console.log('success', data);
 

@@ -16,8 +16,8 @@
       <Loader></Loader>
     </template>
     <input type="submit" value="Log in" :disabled="isLoading" />
-    <!-- <button type="button" @click="testPost">Test Message</button> -->
     <p>New Here? <a href="https://app.capijzo.com/register" target="_blank">Create Account</a></p>
+    <!-- <button type="button" @click="testPost">Test Message</button> -->
   </form>
   <!-- Forgot Password -->
   <!-- New Account -->

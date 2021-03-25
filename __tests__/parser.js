@@ -6,6 +6,11 @@ describe('Parser', () => {
     expect(parsed).toBe('');
   });
 
+  test('given a content, should not return empty string', () => {
+    const parsed = parser.parseHtml('test');
+    expect(parsed).not.toBe('');
+  });
+
   test('given partially valid html should return a correct fragment', () => {
     const parsed = parser.parseHtml('<b>test');
     const element = new DocumentFragment();
@@ -15,7 +20,7 @@ describe('Parser', () => {
     expect(parsed).toEqual(element);
   });
 
-  test('given plain test should return what', () => {
+  test('given plain test should return a fragment with plain text on it', () => {
     const parsed = parser.parseHtml('test');
     const element = new DocumentFragment();
     element.textContent = 'test';

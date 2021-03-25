@@ -16,7 +16,7 @@ describe('Parser', () => {
     const element = new DocumentFragment();
     const child = document.createElement('b');
     child.textContent = 'test';
-    element.append(child);
+    element.append(child)
     expect(parsed).toEqual(element);
   });
 

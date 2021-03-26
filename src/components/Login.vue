@@ -42,12 +42,12 @@ export default Vue.extend({
     };
   },
   methods: {
-//    testPost() {
-//      console.log('llamando testPost');
-//      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-//        chrome.tabs.sendMessage(tabs[0].id, { action: 'open_dialog_box' }, function (response) {});
-//      });
-//    },
+    //    testPost() {
+    //      console.log('llamando testPost');
+    //      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    //        chrome.tabs.sendMessage(tabs[0].id, { action: 'open_dialog_box' }, function (response) {});
+    //      });
+    //    },
     async doLogin(event) {
       event.preventDefault();
       this.isLoading = true;
@@ -65,8 +65,10 @@ export default Vue.extend({
 
         // guardar el token en la pc
         // TODO: move to a storage.service.js storage.set('token', token);
-        chrome.storage.sync.set({ access_token: data.access_token }, () => {
-        });
+        chrome.storage.sync.set(
+          { access_token: data.access_token, user: data.user, token_type: data.token_type },
+          () => {},
+        );
         this.$router.push('/dashboard');
         this.isLoading = false;
       } catch (err) {

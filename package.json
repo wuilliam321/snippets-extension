@@ -10,8 +10,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "build:app": "parcel build src/*.html --out-dir dist",
-    "build:bg": "parcel build src/background.js --out-dir dist",
-    "build:cs": "parcel build src/contentScript.js --out-dir dist",
+    "build:bg": "parcel build src/background.js --no-minify --out-dir dist",
+    "build:cs": "parcel build src/contentScript.js --no-minify --out-dir dist",
     "build": "run-s clean build:app build:bg build:cs",
     "clean": "rimraf dist",
     "zip": "mkdir -p zip && zip -FSrj zip/capijzo-$npm_package_version-chrome.zip dist"
@@ -46,6 +46,7 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
+    "html-to-text": "^7.0.0",
     "vue": "^2.6.12",
     "vue-router": "^3.5.1"
   },

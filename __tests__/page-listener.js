@@ -1,8 +1,35 @@
 import pageListener from '../src/core/page-listener';
-import parser from '../src/core/parser';
 import settings from '../src/core/settings';
 
 const allSnippets = [
+  {
+    id: 4,
+    name: 'Greetings Mail',
+    shortcode: 'full',
+    text:
+      '<p><strong>bold</strong></p><p><em>italic</em></p><p><u>underlined</u></p><p><s>stike</s></p><blockquote>quote</blockquote><pre class="ql-syntax" spellcheck="false">code\n</pre><h1>h1</h1><h2>h2</h2><h3>h3</h3><h4>h4</h4><h5>h5</h5><h6>h6</h6><p>normal</p><ol><li>ordered 1</li><li class="ql-indent-1">ordered 2</li></ol><ul><li>unordered 1</li><li class="ql-indent-1">unordered 2</li></ul><p>subindex <sub>a</sub></p><p>superindex <sup>b</sup></p><p class="ql-indent-1">padding</p><p class="ql-align-right ql-direction-rtl">rigth_hand</p><p><span class="ql-size-small">small</span></p><p>normal</p><p><span class="ql-size-large">large</span></p><p><span class="ql-size-huge">huge</span></p><p>san serif</p><p><span class="ql-font-serif">serif</span></p><p><span class="ql-font-monospace">monospace</span></p><p><span style="color: rgb(230, 0, 0);">with color</span></p><p><span style="background-color: rgb(230, 0, 0);">with background</span></p><p>left</p><p class="ql-align-center">center</p><p class="ql-align-right">right</p><p class="ql-align-justify">justify</p><p><a href="http://geegele,com" rel="noopener noreferrer" target="_blank">link</a></p><p>no format at all</p>',
+    category_id: 62,
+    pivot: {
+      user_id: 57,
+      item_id: 73,
+      item_type: 'App\\Models\\Snippet',
+      scope: 1,
+      approved: 1,
+    },
+    category: {
+      id: 62,
+      name: 'test',
+      color_id: 5,
+      created_at: '2021-03-24T03:29:35.000000Z',
+      updated_at: '2021-03-24T03:29:35.000000Z',
+      color: {
+        id: 5,
+        hex: '#0077B6',
+      },
+    },
+    labels: [],
+    users: [],
+  },
   {
     id: 3,
     name: 'Greetings Mail',
@@ -79,7 +106,6 @@ const allSnippets = [
     users: [],
   },
 ];
-
 
 describe('Detect shortcode', () => {
   test('on `a` pressed isTriggerKey() should false', () => {
@@ -183,5 +209,4 @@ describe('Replacement', () => {
     expect(listener.isTriggerKey()).toBe(true);
     expect(elem.value).toBe(`Strike\n\n\nHeader 2\n * List\n * List Padding`);
   });
-
 });

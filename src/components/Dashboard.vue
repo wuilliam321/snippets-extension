@@ -12,11 +12,18 @@
 
 <script>
 import Vue from 'vue';
-import api from '../core/api';
+import settings from '../core/settings';
+import storage from '../core/storage';
+
+const store = storage(chrome.storage.sync);
+const cfg = settings(store);
 
 export default Vue.extend({
   async mounted() {
-    const snippets = await api.getSnippets()
+    await cfg.fetchSnippets();
+    chrome.storage.sync.get(['snippets'], (res) => {
+      console.log('get res', res)
+    });
   },
   methods: {
     async doLogout(event) {

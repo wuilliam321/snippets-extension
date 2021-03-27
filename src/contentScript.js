@@ -10,12 +10,10 @@ const listener = pageListener.PageListener({ cfg });
 // TODO aqui voy tratando de capas pasar aqui un evet con callback y en el callback hacer lo que quiera con lo que consigo??? maybe???
 document.addEventListener('keyup', async (event) => {
   listener.onKeyPressed(event);
-  console.log('key pressed 1', event);
+  console.log('key pressed', event);
   if (listener.isTriggerKey()) {
     // TODO: replace only if a shortcode is found
-    // console.log('value', event.target.value);
     const elem = await listener.replace(event.target);
-    // console.log('elem', elem);
     event.target.value = elem.value;
   }
 });

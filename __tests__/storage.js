@@ -7,7 +7,7 @@ const service = {
 
 describe('Storage set', () => {
   test('if no storage service provided should throw error', async () => {
-    // Todo we need tests to guarantee the interface
+    // TODO: we need tests to guarantee the interface
     expect(() => storage()).toThrowError();
   });
 

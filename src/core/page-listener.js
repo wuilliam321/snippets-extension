@@ -12,33 +12,18 @@ function PageListener(options) {
   }
   const triggerKey = '/';
   let currentKey = {};
-  let stream = '';
+  let currentWord = '';
 
   // const handleReplace = () => {};
 
   const onKeyPressed = async (event) => {
-    // console.log('onKeyPressed', event.target.value);
     currentKey = event;
     if (event.key === ' ') {
-      stream = '';
+      currentWord = '';
     }
     if (!isTriggerKey()) {
-      stream += event.key;
-      stream = stream.trim();
-    }
-
-    // handleReplace();
-    if (isTriggerKey()) {
-      // const snippet = await cfg.getSnippetByShortcode(shortcode());
-      // // event.target.value = parser.parseHtmlToText(snippet.text);
-      // console.log('going to replace onKeyPressed');
-      // console.log('going to replace onKeyPressed value', event.target.value);
-      // event.target.value = replace(
-      //   event.target.value,
-      //   shortcode(),
-      //   parser.parseHtmlToText(snippet.text),
-      // );
-      // console.log('going to replace onKeyPressed value after', event.target.value);
+      currentWord += event.key;
+      currentWord = currentWord.trim();
     }
   };
 
@@ -51,7 +36,7 @@ function PageListener(options) {
 
   const shortcode = () => {
     if (isTriggerKey()) {
-      return stream;
+      return currentWord;
     }
     return '';
   };
@@ -59,9 +44,9 @@ function PageListener(options) {
   const findShortCode = (text) => {
     const textParts = text.split(' ');
     const shortcodeWithTriggerKey = textParts[textParts.length - 1];
-    const shortcode = shortcodeWithTriggerKey.replace(triggerKey, '')
+    const shortcode = shortcodeWithTriggerKey.replace(triggerKey, '');
     return shortcode;
-  }
+  };
 
   const replace = async (element) => {
     if (!element) {
@@ -72,17 +57,19 @@ function PageListener(options) {
     }
 
     const shortcode = findShortCode(element.value);
-    // console.log('shortcode', shortcode);
-    // console.log('all', await cfg.getSnippets());
     const foundSnippet = await cfg.getSnippetByShortcode(shortcode);
-    // console.log('foundSnippet', foundSnippet);
     if (foundSnippet) {
       element.value = element.value.replace(
         foundSnippet.shortcode + triggerKey,
         parser.parseHtmlToText(foundSnippet.text),
       );
     }
+    clearCurrentWord();
     return Promise.resolve(element);
+  };
+
+  const clearCurrentWord = () => {
+    currentWord = '';
   };
 
   return {
@@ -90,6 +77,7 @@ function PageListener(options) {
     isTriggerKey,
     shortcode,
     replace,
+    clearCurrentWord,
   };
 }
 

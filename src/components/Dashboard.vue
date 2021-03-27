@@ -20,10 +20,8 @@ const cfg = settings(store);
 
 export default Vue.extend({
   async mounted() {
+    // TODO: we need in some way pull this in a polling
     await cfg.fetchSnippets();
-    chrome.storage.sync.get(['snippets'], (res) => {
-      console.log('get res', res)
-    });
   },
   methods: {
     async doLogout(event) {

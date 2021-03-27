@@ -54,11 +54,8 @@ function Settings(store) {
     return new Promise(async (resolve, reject) => {
       try {
         const data = await api.getSnippets();
-        // console.log('fetchSnippets', data);
         if (data) {
-          // console.log('setSnippets', data);
           await setSnippets(data);
-          // console.log('resolve', data);
           resolve(data);
         }
         resolve([]);

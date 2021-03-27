@@ -14,9 +14,7 @@ function PageListener(options) {
   let currentKey = {};
   let currentWord = '';
 
-  // const handleReplace = () => {};
-
-  const onKeyPressed = async (event) => {
+  const buildCurrentWord = async (event) => {
     currentKey = event;
     if (event.key === ' ') {
       currentWord = '';
@@ -73,7 +71,7 @@ function PageListener(options) {
   };
 
   return {
-    onKeyPressed,
+    buildCurrentWord,
     isTriggerKey,
     shortcode,
     replace,

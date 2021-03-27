@@ -53,21 +53,21 @@ describe('Detect shortcode', () => {
 
   test('on `a` pressed isTriggerKey() should false', () => {
     const elem = document.createElement('textarea');
-    elem.addEventListener('keyup', listener.onKeyPressed);
+    elem.addEventListener('keyup', listener.buildCurrentWord);
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'a' }));
     expect(listener.isTriggerKey()).toBe(false);
   });
 
   test('on no key press', () => {
     const elem = document.createElement('textarea');
-    elem.addEventListener('keyup', listener.onKeyPressed);
+    elem.addEventListener('keyup', listener.buildCurrentWord);
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: null }));
     expect(listener.isTriggerKey()).toBe(false);
   });
 
   test('on `aa` pressed isTriggerKey() should false', () => {
     const elem = document.createElement('textarea');
-    elem.addEventListener('keyup', listener.onKeyPressed);
+    elem.addEventListener('keyup', listener.buildCurrentWord);
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'a' }));
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'a' }));
     expect(listener.isTriggerKey()).toBe(false);
@@ -76,7 +76,7 @@ describe('Detect shortcode', () => {
 
   test('on `aaa` pressed isTriggerKey() should false', () => {
     const elem = document.createElement('textarea');
-    elem.addEventListener('keyup', listener.onKeyPressed);
+    elem.addEventListener('keyup', listener.buildCurrentWord);
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'b' }));
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'b' }));
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'b' }));
@@ -86,7 +86,7 @@ describe('Detect shortcode', () => {
 
   test('on `aaa/` pressed isTriggerKey() should true', () => {
     const elem = document.createElement('textarea');
-    elem.addEventListener('keyup', listener.onKeyPressed);
+    elem.addEventListener('keyup', listener.buildCurrentWord);
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'a' }));
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'a' }));
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'a' }));
@@ -97,7 +97,7 @@ describe('Detect shortcode', () => {
 
   test('on `ggg/` pressed isTriggerKey() should true and short code should be ggg', () => {
     const elem = document.createElement('textarea');
-    elem.addEventListener('keyup', listener.onKeyPressed);
+    elem.addEventListener('keyup', listener.buildCurrentWord);
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'g' }));
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'g' }));
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'g' }));
@@ -108,7 +108,7 @@ describe('Detect shortcode', () => {
 
   test('on `gg ggg/` pressed isTriggerKey() should true and short code should be ggg', () => {
     const elem = document.createElement('textarea');
-    elem.addEventListener('keyup', listener.onKeyPressed);
+    elem.addEventListener('keyup', listener.buildCurrentWord);
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'g' }));
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'g' }));
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: ' ' }));

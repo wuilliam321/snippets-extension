@@ -1,8 +1,4 @@
 import api from './api';
-import storage from './storage';
-
-// TODO aqui voy can lo de meter es storage aqui para luega utilizarlo por todos lados
-// necesito aqui abrir los tests, asegurarme que el store se llama o algo asi
 
 function Settings(store) {
   if (!store) {

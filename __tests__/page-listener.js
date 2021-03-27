@@ -71,17 +71,17 @@ describe('Detect shortcode', () => {
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'a' }));
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'a' }));
     expect(listener.isTriggerKey()).toBe(false);
-    expect(listener.shortcode()).toBe('');
+    expect(listener.getShortcode(elem.value)).toBe('');
   });
 
   test('on `aaa` pressed isTriggerKey() should false', () => {
     const elem = document.createElement('textarea');
     elem.addEventListener('keyup', listener.buildCurrentWord);
-    elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'b' }));
-    elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'b' }));
-    elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'b' }));
+    elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'a' }));
+    elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'a' }));
+    elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'a' }));
     expect(listener.isTriggerKey()).toBe(false);
-    expect(listener.shortcode()).toBe('');
+    expect(listener.getShortcode(elem.value)).toBe('');
   });
 
   test('on `aaa/` pressed isTriggerKey() should true', () => {
@@ -91,8 +91,9 @@ describe('Detect shortcode', () => {
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'a' }));
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'a' }));
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: '/' }));
+    elem.value = 'aaa/'; // hardcoded because unavailable to trigger change on node
     expect(listener.isTriggerKey()).toBe(true);
-    expect(listener.shortcode()).toBe('aaa');
+    expect(listener.getShortcode(elem.value)).toBe('aaa');
   });
 
   test('on `ggg/` pressed isTriggerKey() should true and short code should be ggg', () => {
@@ -102,8 +103,9 @@ describe('Detect shortcode', () => {
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'g' }));
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'g' }));
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: '/' }));
+    elem.value = 'ggg/'; // hardcoded because unavailable to trigger change on node
     expect(listener.isTriggerKey()).toBe(true);
-    expect(listener.shortcode()).toBe('ggg');
+    expect(listener.getShortcode(elem.value)).toBe('ggg');
   });
 
   test('on `gg ggg/` pressed isTriggerKey() should true and short code should be ggg', () => {
@@ -116,8 +118,9 @@ describe('Detect shortcode', () => {
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'g' }));
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: 'g' }));
     elem.dispatchEvent(new KeyboardEvent('keyup', { key: '/' }));
+    elem.value = 'gg ggg/'; // hardcoded because unavailable to trigger change on node
     expect(listener.isTriggerKey()).toBe(true);
-    expect(listener.shortcode()).toBe('ggg');
+    expect(listener.getShortcode(elem.value)).toBe('ggg');
   });
 });
 

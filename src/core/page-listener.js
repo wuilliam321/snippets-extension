@@ -32,18 +32,10 @@ function PageListener(options) {
     return false;
   };
 
-  const shortcode = () => {
-    if (isTriggerKey()) {
-      return currentWord;
-    }
-    return '';
-  };
-
-  const findShortCode = (text) => {
+  const getShortcode = (text) => {
     const textParts = text.split(' ');
     const shortcodeWithTriggerKey = textParts[textParts.length - 1];
-    const shortcode = shortcodeWithTriggerKey.replace(triggerKey, '');
-    return shortcode;
+    return shortcodeWithTriggerKey.replace(triggerKey, '');
   };
 
   const replace = async (element) => {
@@ -54,8 +46,8 @@ function PageListener(options) {
       return Promise.resolve(element);
     }
 
-    const shortcode = findShortCode(element.value);
-    const foundSnippet = await cfg.getSnippetByShortcode(shortcode);
+    const foundShortcode = getShortcode(element.value);
+    const foundSnippet = await cfg.getSnippetByShortcode(foundShortcode);
     if (foundSnippet) {
       element.value = element.value.replace(
         foundSnippet.shortcode + triggerKey,
@@ -73,7 +65,7 @@ function PageListener(options) {
   return {
     buildCurrentWord,
     isTriggerKey,
-    shortcode,
+    getShortcode,
     replace,
     clearCurrentWord,
   };

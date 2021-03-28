@@ -1,6 +1,12 @@
 import parser from '../src/core/parser';
 
-describe('Parser parseHtml', () => {
+describe('Parser', () => {
+  // TODO need a detectFormatFor(element) to detect available format for it
+  // html or text or some other, and then parse(format)
+  // parse(format) should call parseStringHtml or parseStringHtmlToText
+
+  // parseHtml
+
   test('given no content, should return empty string', () => {
     const parsed = parser.parseHtml();
     expect(parsed).toBe('');
@@ -26,9 +32,9 @@ describe('Parser parseHtml', () => {
     element.textContent = 'test';
     expect(parsed).toEqual(element);
   });
-});
 
-describe('Parser parseHtmlToText', () => {
+  // parseHtmlToText
+
   test('given no text should return empty string', () => {
     const parsed = parser.parseHtmlToText();
     expect(parsed).toBe('');

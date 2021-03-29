@@ -2,7 +2,7 @@ import parser from '../src/core/parser';
 
 chrome.runtime.onInstalled.addListener(() => {
   console.log('Welcome');
-  parser.parseHtml();
+  parser.parseTextToHtml();
 });
 console.log('bac.js');
 chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {

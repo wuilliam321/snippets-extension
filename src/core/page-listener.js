@@ -1,15 +1,6 @@
 import parser from './parser';
-import settings from './settings';
 
-function PageListener(options) {
-  let { cfg, store } = options;
-  if (!cfg) {
-    // if (!store) {
-    //   store = storage();
-    // }
-    const store = storage();
-    cfg = settings(store);
-  }
+function PageListener(cfg) {
   const triggerKey = '/';
   let currentKey;
   let currentWord = '';
@@ -32,6 +23,7 @@ function PageListener(options) {
     return false;
   };
 
+  // https://jsfiddle.net/TjXEG/900/
   const getCaretCharacterOffsetWithin = (element) => {
     let caretOffset = 0;
     let doc = element.ownerDocument || element.document;
@@ -44,6 +36,7 @@ function PageListener(options) {
         let preCaretRange = range.cloneRange();
         preCaretRange.selectNodeContents(element);
         preCaretRange.setEnd(range.endContainer, range.endOffset);
+        console.log('preCaretRange 1', preCaretRange);
         caretOffset = preCaretRange.toString().length;
       }
     } else if ((sel = doc.selection) && sel.type != 'Control') {
@@ -51,13 +44,14 @@ function PageListener(options) {
       let preCaretTextRange = doc.body.createTextRange();
       preCaretTextRange.moveToElementText(element);
       preCaretTextRange.setEndPoint('EndToEnd', textRange);
+        console.log('preCaretRange 2', preCaretRange.text);
       caretOffset = preCaretTextRange.text.length;
     }
     return caretOffset;
   };
 
   const getShortcode = (text) => {
-    const textParts = text.split(' ');
+    const textParts = text.split(/(\s+)/);
     const shortcodeWithTriggerKey = textParts[textParts.length - 1];
     return shortcodeWithTriggerKey.replace(triggerKey, '');
   };
@@ -74,20 +68,21 @@ function PageListener(options) {
     // console.log('caret position', pos);
     let prevText = element.innerHTML;
     let nextText = '';
-    if (oneIndexCaretPosition >= 0) {
+    if (oneIndexCaretPosition > 0) {
       prevText = element.innerHTML.slice(0, oneIndexCaretPosition);
       nextText = element.innerHTML.slice(oneIndexCaretPosition, element.innerHTML.length);
     }
-    // console.log('prev', prevText);
-    // console.log('next', nextText);
+    console.log('prev', prevText, parser.parseTextToHtml(prevText));
+    console.log('next', nextText);
 
-    // console.log('text', element.innerHTML);
     const foundShortcode = getShortcode(parser.parseHtmlToText(prevText));
+    // TODO: move cfg dependecy out of here
     const foundSnippet = await cfg.getSnippetByShortcode(foundShortcode);
-    // console.log('foundSnippet', foundSnippet);
+    // TODO aqui voy algo da -1 no se que es (tiene que ver con los content edible
+    console.log('foundSnippet', foundSnippet);
     if (foundSnippet) {
       // console.log('replace', element.innerHTML, foundSnippet.shortcode + triggerKey);
-      let tempText = prevText.replace(foundSnippet.shortcode + triggerKey, foundSnippet.text);
+      const tempText = prevText.replace(foundSnippet.shortcode + triggerKey, foundSnippet.text);
       element.innerHTML = tempText + nextText;
     }
     clearCurrentWord();
@@ -95,7 +90,7 @@ function PageListener(options) {
     return Promise.resolve(element);
   };
 
-  const replacePlainText = async (element) => {
+  const replacePlainText = async (element, oneIndexCaretPosition) => {
     if (!element) {
       return Promise.reject('element is required');
     }
@@ -103,16 +98,24 @@ function PageListener(options) {
       return Promise.resolve(element);
     }
 
-    const text = element.value;
+    let prevText = element.value;
+    let nextText = '';
+    if (oneIndexCaretPosition > 0) {
+      prevText = element.value.slice(0, oneIndexCaretPosition);
+      nextText = element.value.slice(oneIndexCaretPosition, element.value.length);
+    }
+
     // console.log('text', text);
-    const foundShortcode = getShortcode(text);
+    const foundShortcode = getShortcode(prevText);
+    // TODO: move cfg dependecy out of here
     const foundSnippet = await cfg.getSnippetByShortcode(foundShortcode);
     // console.log('foundSnippet', foundSnippet, text);
     if (foundSnippet) {
-      element.value = element.value.replace(
+      const tempText = prevText.replace(
         foundSnippet.shortcode + triggerKey,
         parser.parseHtmlToText(foundSnippet.text),
       );
+      element.value = tempText + nextText;
     }
     clearCurrentWord();
     return Promise.resolve(element);

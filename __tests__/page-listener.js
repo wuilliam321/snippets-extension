@@ -45,11 +45,7 @@ describe('Detect shortcode', () => {
   beforeAll(() => {
     const store = storage(service);
     const cfg = settings(store);
-    const options = {
-      cfg,
-      store,
-    };
-    listener = pageListener.PageListener(options);
+    listener = pageListener.PageListener(cfg);
   });
 
   beforeEach(() => listener.clearCurrentWord());
@@ -230,7 +226,7 @@ describe('Replacement', () => {
     const store = storage(service);
     const cfg = settings(store);
     await cfg.setSnippets(allSnippets);
-    listener = pageListener.PageListener({ cfg });
+    listener = pageListener.PageListener(cfg);
   });
 
   // replacePlainText
@@ -278,6 +274,31 @@ describe('Replacement', () => {
     const result = await listener.replacePlainText(elem);
     expect(elem.value).toBe('a bb/ a');
     expect(result.value).toBe('a bb/ a');
+  });
+
+  test('given a shortcode in the middle but cursor is in that position should replace it', async () => {
+    const elem = document.createElement('textarea');
+    elem.value = 'a bb/ a';
+    const result = await listener.replacePlainText(elem, 5);
+    expect(elem.value).toBe('a Strike\n\n\nHeader 2\n * List\n * List Padding a');
+    expect(result.value).toBe('a Strike\n\n\nHeader 2\n * List\n * List Padding a');
+  });
+
+  test('given a multiline value should replace', async () => {
+    const elem = document.createElement('textarea');
+    elem.value = `a bb/\n a`;
+    const result = await listener.replacePlainText(elem, 5);
+    expect(elem.value).toBe('a Strike\n\n\nHeader 2\n * List\n * List Padding\n a');
+    expect(result.value).toBe('a Strike\n\n\nHeader 2\n * List\n * List Padding\n a');
+  });
+
+  test('given a multiline, but shortcode at the beging value should replace', async () => {
+    const elem = document.createElement('textarea');
+    elem.value = `a\nbb/ a`;
+    const result = await listener.replacePlainText(elem, 5);
+    const expected = 'a\nStrike\n\n\nHeader 2\n * List\n * List Padding a'
+    expect(elem.value).toBe(expected);
+    expect(result.value).toBe(expected);
   });
 
   test('given a shortcode in with text before should replace it', async () => {

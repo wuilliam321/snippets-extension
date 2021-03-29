@@ -2,10 +2,7 @@ import api from './api';
 
 function Settings(store) {
   if (!store) {
-    if (!chrome) {
-      throw new Error('store should be provided');
-    }
-    store = chrome.storage.sync;
+    throw new Error('store should be provided');
   }
 
   const getSnippetByShortcode = async (shortcode) => {

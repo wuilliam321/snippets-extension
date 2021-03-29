@@ -4,7 +4,7 @@ import storage from '../src/core/storage';
 
 const store = storage(chrome.storage.sync);
 const cfg = settings(store);
-const listener = pageListener.PageListener({ cfg });
+const listener = pageListener.PageListener(cfg);
 
 // TODO aqui voy tratando de capas pasar aqui un evet con callback y en el callback hacer lo que quiera con lo que consigo??? maybe???
 //
@@ -14,28 +14,32 @@ const listener = pageListener.PageListener({ cfg });
 document.addEventListener('input', async (event) => {
   listener.buildCurrentWord(event);
   console.log('input', event);
-  // console.log('target', event.target);
-  const editable = event.target.hasAttribute('contenteditable');
+  // const [element] = event.path;
+  const element = event.path[0];
+  const editable = element.hasAttribute('contenteditable');
   if (editable) {
     if (listener.isTriggerKey()) {
-      console.log('editable html', event.target.innerHTML);
+      console.log('editable html', element.innerHTML);
       // TODO: replace only if a shortcode is found
-      const pos = listener.getCaretCharacterOffsetWithin(event.target);
-      const elem = await listener.replaceHtml(event.target, pos);
-      event.target.innerHTML = elem.innerHTML;
+      const pos = listener.getCaretCharacterOffsetWithin(element);
+      console.log('pos editable', pos);
+      const result = await listener.replaceHtml(element, pos);
+      element.innerHTML = result.innerHTML;
     }
   } else {
     if (listener.isTriggerKey()) {
-      console.log('value', event.target.value);
+      console.log('value', element.value);
       // TODO: replace only if a shortcode is found
-      const elem = await listener.replacePlainText(event.target);
-      event.target.value = elem.value;
+      const pos = listener.getCaretCharacterOffsetWithin(element);
+      console.log('pos input', pos);
+      const elem = await listener.replacePlainText(element, pos);
+      element.value = elem.value;
     }
   }
-  // console.log('outer', event.target.outerHTML);
+  // console.log('outer', element.outerHTML);
 });
 
 chrome.runtime.sendMessage({ text: 'esto es desde cs' }, function (response) {
   console.log('Response: ', response);
-  // parser.parseHtml();
+  // parser.parseTextToHtml();
 });

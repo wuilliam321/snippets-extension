@@ -13,10 +13,12 @@
 <script>
 import Vue from 'vue';
 import api from '../core/api';
+import settings from '../core/settings';
 
 export default Vue.extend({
   async mounted() {
-    const snippets = await api.getSnippets()
+    const snippets = await api.getSnippets();
+    settings.setSnippets(snippets);
   },
   methods: {
     async doLogout(event) {

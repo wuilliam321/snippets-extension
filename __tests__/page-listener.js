@@ -45,6 +45,7 @@ describe('Detect shortcode', () => {
   beforeAll(() => {
     const store = storage(service);
     const cfg = settings(store);
+    cfg.fetchSnippets();
     listener = pageListener.PageListener(cfg);
   });
 
@@ -123,7 +124,7 @@ describe('Detect shortcode', () => {
     expect(listener.isTriggerKey()).toBe(true);
     expect(listener.getShortcode(elem.value)).toBe('ggg');
   });
-  
+
   // contenteditable
 
   test('contenteditable on `a` pressed isTriggerKey() should false', () => {
@@ -215,8 +216,10 @@ describe('Detect shortcode', () => {
     elem.dispatchEvent(new InputEvent(eventName, { data: '/' }));
     elem.innerHTML = '<p>gg aaa/ gg</p>'; // hardcoded because unavailable to trigger change on node
     expect(listener.isTriggerKey()).toBe(true);
-    const result = await listener.replaceHtml(elem, 10)
-    expect(result.innerHTML).toBe('<p>gg </p><p><s>Strike</s></p><p><br></p><h1>Header 1</h1><ul><li>List</li><li class="ql-indent-1">List Padding</li></ul> gg<p></p>');
+    const result = await listener.replaceHtml(elem, 7);
+    expect(result.innerHTML).toBe(
+      '<p>gg </p><p><s>Strike</s></p><p><br></p><h1>Header 1</h1><ul><li>List</li><li class="ql-indent-1">List Padding</li></ul> gg<p></p>',
+    );
   });
 });
 
@@ -296,7 +299,7 @@ describe('Replacement', () => {
     const elem = document.createElement('textarea');
     elem.value = `a\nbb/ a`;
     const result = await listener.replacePlainText(elem, 5);
-    const expected = 'a\nStrike\n\n\nHeader 2\n * List\n * List Padding a'
+    const expected = 'a\nStrike\n\n\nHeader 2\n * List\n * List Padding a';
     expect(elem.value).toBe(expected);
     expect(result.value).toBe(expected);
   });
@@ -336,8 +339,9 @@ describe('Replacement', () => {
     const elem = document.createElement('div');
     elem.setAttribute('contenteditable', true);
     elem.innerHTML = '<p>aa/</p>'; // hardcoded because unavailable to trigger change on node
-    const result = await listener.replaceHtml(elem, 6)
-    const expected = '<p></p><p><s>Strike</s></p><p><br></p><h1>Header 1</h1><ul><li>List</li><li class="ql-indent-1">List Padding</li></ul><p></p>'
+    const result = await listener.replaceHtml(elem, 6);
+    const expected =
+      '<p></p><p><s>Strike</s></p><p><br></p><h1>Header 1</h1><ul><li>List</li><li class="ql-indent-1">List Padding</li></ul><p></p>';
     expect(elem.innerHTML).toBe(expected);
     expect(result.innerHTML).toBe(expected);
   });
@@ -346,8 +350,8 @@ describe('Replacement', () => {
     const elem = document.createElement('div');
     elem.setAttribute('contenteditable', true);
     elem.innerHTML = '<p>aa</p>'; // hardcoded because unavailable to trigger change on node
-    const result = await listener.replaceHtml(elem, 5)
-    const expected = '<p>aa</p>'
+    const result = await listener.replaceHtml(elem, 5);
+    const expected = '<p>aa</p>';
     expect(elem.innerHTML).toBe(expected);
     expect(result.innerHTML).toBe(expected);
   });
@@ -356,8 +360,9 @@ describe('Replacement', () => {
     const elem = document.createElement('div');
     elem.setAttribute('contenteditable', true);
     elem.innerHTML = '<p>bb/</p>'; // hardcoded because unavailable to trigger change on node
-    const result = await listener.replaceHtml(elem, 6)
-    const expected = '<p></p><p><s>Strike</s></p><p><br></p><h1>Header 2</h1><ul><li>List</li><li class="ql-indent-1">List Padding</li></ul><p></p>'
+    const result = await listener.replaceHtml(elem, 6);
+    const expected =
+      '<p></p><p><s>Strike</s></p><p><br></p><h1>Header 2</h1><ul><li>List</li><li class="ql-indent-1">List Padding</li></ul><p></p>';
     expect(elem.innerHTML).toBe(expected);
     expect(result.innerHTML).toBe(expected);
   });
@@ -366,8 +371,8 @@ describe('Replacement', () => {
     const elem = document.createElement('div');
     elem.setAttribute('contenteditable', true);
     elem.innerHTML = '<p>aa bb/ a</p>'; // hardcoded because unavailable to trigger change on node
-    const result = await listener.replaceHtml(elem, 11)
-    const expected = '<p>aa bb/ a</p>'
+    const result = await listener.replaceHtml(elem, 11);
+    const expected = '<p>aa bb/ a</p>';
     expect(elem.innerHTML).toBe(expected);
     expect(result.innerHTML).toBe(expected);
   });
@@ -376,8 +381,9 @@ describe('Replacement', () => {
     const elem = document.createElement('div');
     elem.setAttribute('contenteditable', true);
     elem.innerHTML = '<p>before bb/</p>'; // hardcoded because unavailable to trigger change on node
-    const result = await listener.replaceHtml(elem, 13)
-    const expected = '<p>before </p><p><s>Strike</s></p><p><br></p><h1>Header 2</h1><ul><li>List</li><li class="ql-indent-1">List Padding</li></ul><p></p>'
+    const result = await listener.replaceHtml(elem, 13);
+    const expected =
+      '<p>before </p><p><s>Strike</s></p><p><br></p><h1>Header 2</h1><ul><li>List</li><li class="ql-indent-1">List Padding</li></ul><p></p>';
     expect(elem.innerHTML).toBe(expected);
     expect(result.innerHTML).toBe(expected);
   });
@@ -386,8 +392,8 @@ describe('Replacement', () => {
     const elem = document.createElement('div');
     elem.setAttribute('contenteditable', true);
     elem.innerHTML = '<p>non-existent/</p>'; // hardcoded because unavailable to trigger change on node
-    const result = await listener.replaceHtml(elem, 16)
-    const expected = '<p>non-existent/</p>'
+    const result = await listener.replaceHtml(elem, 16);
+    const expected = '<p>non-existent/</p>';
     expect(elem.innerHTML).toBe(expected);
     expect(result.innerHTML).toBe(expected);
   });

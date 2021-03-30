@@ -13,25 +13,25 @@ const listener = pageListener.PageListener(cfg);
 
 document.addEventListener('input', async (event) => {
   listener.buildCurrentWord(event);
-  console.log('input', event);
+  // console.log('input', event);
   // const [element] = event.path;
   const element = event.path[0];
   const editable = element.hasAttribute('contenteditable');
   if (editable) {
     if (listener.isTriggerKey()) {
-      console.log('editable html', element.innerHTML);
+      // console.log('editable html', element.innerHTML);
       // TODO: replace only if a shortcode is found
       const pos = listener.getCaretCharacterOffsetWithin(element);
-      console.log('pos editable', pos);
+      // console.log('pos editable', pos);
       const result = await listener.replaceHtml(element, pos);
       element.innerHTML = result.innerHTML;
     }
   } else {
     if (listener.isTriggerKey()) {
-      console.log('value', element.value);
+      // console.log('value', element.value);
       // TODO: replace only if a shortcode is found
       const pos = listener.getCaretCharacterOffsetWithin(element);
-      console.log('pos input', pos);
+      // console.log('pos input', pos);
       const elem = await listener.replacePlainText(element, pos);
       element.value = elem.value;
     }

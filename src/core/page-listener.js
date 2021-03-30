@@ -36,7 +36,7 @@ function PageListener(cfg) {
         let preCaretRange = range.cloneRange();
         preCaretRange.selectNodeContents(element);
         preCaretRange.setEnd(range.endContainer, range.endOffset);
-        console.log('preCaretRange 1', preCaretRange);
+        // console.log('preCaretRange 1', preCaretRange);
         caretOffset = preCaretRange.toString().length;
       }
     } else if ((sel = doc.selection) && sel.type != 'Control') {
@@ -44,7 +44,7 @@ function PageListener(cfg) {
       let preCaretTextRange = doc.body.createTextRange();
       preCaretTextRange.moveToElementText(element);
       preCaretTextRange.setEndPoint('EndToEnd', textRange);
-        console.log('preCaretRange 2', preCaretRange.text);
+        // console.log('preCaretRange 2', preCaretRange.text);
       caretOffset = preCaretTextRange.text.length;
     }
     return caretOffset;
@@ -65,25 +65,23 @@ function PageListener(cfg) {
       return Promise.resolve(element);
     }
 
-    // console.log('caret position', pos);
-    let prevText = element.innerHTML;
-    let nextText = '';
+    // console.log('element.textContent', element.textContent);
+    let prevText = element.textContent;
     if (oneIndexCaretPosition > 0) {
-      prevText = element.innerHTML.slice(0, oneIndexCaretPosition);
-      nextText = element.innerHTML.slice(oneIndexCaretPosition, element.innerHTML.length);
+      prevText = element.textContent.slice(0, oneIndexCaretPosition);
     }
-    console.log('prev', prevText, parser.parseTextToHtml(prevText));
-    console.log('next', nextText);
+    // console.log('prev', prevText, parser.parseTextToHtml(prevText));
+    // console.log('next', nextText);
 
-    const foundShortcode = getShortcode(parser.parseHtmlToText(prevText));
+    const foundShortcode = getShortcode(prevText);
     // TODO: move cfg dependecy out of here
     const foundSnippet = await cfg.getSnippetByShortcode(foundShortcode);
     // TODO aqui voy algo da -1 no se que es (tiene que ver con los content edible
-    console.log('foundSnippet', foundSnippet);
+    // console.log('foundSnippet', foundSnippet);
     if (foundSnippet) {
       // console.log('replace', element.innerHTML, foundSnippet.shortcode + triggerKey);
-      const tempText = prevText.replace(foundSnippet.shortcode + triggerKey, foundSnippet.text);
-      element.innerHTML = tempText + nextText;
+      const tempText = element.innerHTML.replace(foundSnippet.shortcode + triggerKey, foundSnippet.text);
+      element.innerHTML = tempText;
     }
     clearCurrentWord();
     // console.log('outer', element.outerHTML);

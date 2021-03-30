@@ -22,8 +22,7 @@ export default Vue.extend({
   async mounted() {
     // TODO: we need in some way pull this in a polling
     await cfg.fetchSnippets();
-    const user = await api.getUser();
-    console.log('hola', user);
+    await cfg.fetchUserInfo();
   },
   methods: {
     async doLogout(event) {

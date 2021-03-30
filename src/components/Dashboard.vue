@@ -12,13 +12,16 @@
 
 <script>
 import Vue from 'vue';
-import api from '../core/api';
 import settings from '../core/settings';
+import storage from '../core/storage';
+
+const store = storage(chrome.storage.sync);
+const cfg = settings(store);
 
 export default Vue.extend({
   async mounted() {
-    const snippets = await api.getSnippets();
-    settings.setSnippets(snippets);
+    // TODO: we need in some way pull this in a polling
+    await cfg.fetchSnippets();
   },
   methods: {
     async doLogout(event) {

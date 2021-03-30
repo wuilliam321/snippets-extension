@@ -1,135 +1,70 @@
 import settings from '../src/core/settings';
+import storage from '../src/core/storage';
+import api from '../src/core/api';
 
-const allSnippets = [
-  {
-    id: 3,
-    name: 'Greetings Mail',
-    shortcode: 'hhh',
-    text:
-      '<p><s>Strike</s></p><p><br></p><h1>Header 1</h1><ul><li>List</li><li class="ql-indent-1">List Padding</li></ul>',
-    category_id: 62,
-    pivot: {
-      user_id: 57,
-      item_id: 73,
-      item_type: 'App\\Models\\Snippet',
-      scope: 1,
-      approved: 1,
-    },
-    category: {
-      id: 62,
-      name: 'test',
-      color_id: 5,
-      created_at: '2021-03-24T03:29:35.000000Z',
-      updated_at: '2021-03-24T03:29:35.000000Z',
-      color: { id: 5, hex: '#0077B6' },
-    },
-    labels: [],
-    users: [],
-  },
-  {
-    id: 2,
-    name: 'Greetings Mail',
-    shortcode: 'bb',
-    text:
-      '<p><s>Strike</s></p><p><br></p><h1>Header 2</h1><ul><li>List</li><li class="ql-indent-1">List Padding</li></ul>',
-    category_id: 62,
-    pivot: {
-      user_id: 57,
-      item_id: 73,
-      item_type: 'App\\Models\\Snippet',
-      scope: 1,
-      approved: 1,
-    },
-    category: {
-      id: 62,
-      name: 'test',
-      color_id: 5,
-      created_at: '2021-03-24T03:29:35.000000Z',
-      updated_at: '2021-03-24T03:29:35.000000Z',
-      color: { id: 5, hex: '#0077B6' },
-    },
-    labels: [],
-    users: [],
-  },
-  {
-    id: 1,
-    name: 'Greetings Mail',
-    shortcode: 'aaa',
-    text:
-      '<p><s>Strike</s></p><p><br></p><h1>Header 1</h1><ul><li>List</li><li class="ql-indent-1">List Padding</li></ul>',
-    category_id: 62,
-    pivot: {
-      user_id: 57,
-      item_id: 73,
-      item_type: 'App\\Models\\Snippet',
-      scope: 1,
-      approved: 1,
-    },
-    category: {
-      id: 62,
-      name: 'test',
-      color_id: 5,
-      created_at: '2021-03-24T03:29:35.000000Z',
-      updated_at: '2021-03-24T03:29:35.000000Z',
-      color: { id: 5, hex: '#0077B6' },
-    },
-    labels: [],
-    users: [],
-  },
-];
+jest.mock('../src/core/api');
 
-describe('Settings getSnippetByShortcode', () => {
-  test('given no shortcode null should return -1', () => {
-    const snippet = settings.getSnippetByShortcode();
-    settings.setSnippets(allSnippets);
+const service = {
+  set: jest.fn((_, cb) => cb()),
+  get: jest.fn((items, cb) => cb(items)),
+};
+
+describe('Settings', () => {
+  let cfg;
+
+  beforeAll(async () => {
+    const store = storage(service);
+    cfg = settings(store);
+    await cfg.setSnippets([]);
+  });
+
+  // getSnippetByShortcode
+
+  test('should throw error if no store provided', () => {
+    expect(() => settings()).toThrowError();
+  });
+
+  test('given no shortcode null should return -1', async () => {
+    const snippet = await cfg.getSnippetByShortcode();
     expect(snippet).toBe(-1); // not found
   });
 
-  test('given no shortcode should return -1', () => {
-    const snippet = settings.getSnippetByShortcode('');
-    settings.setSnippets(allSnippets);
-    expect(snippet).toBe(-1); // not found
-  });
+  // setSnippets
 
-  test('given valid shortcode return the snippet', () => {
-    const snippet = settings.getSnippetByShortcode('hhh');
-    settings.setSnippets(allSnippets);
-    expect(snippet.id).toBe(3);
-  });
-
-  test('given a different valid shortcode return the snippet', () => {
-    const snippet = settings.getSnippetByShortcode('bb');
-    settings.setSnippets(allSnippets);
-    expect(snippet.id).toBe(2);
-  });
-
-  test('given non-existent shortcode return the -1', () => {
-    const snippet = settings.getSnippetByShortcode('non-existent');
-    settings.setSnippets(allSnippets);
-    expect(snippet).toBe(-1); // not found
-  });
-});
-
-describe('Settings setSnippets', () => {
-  test('given no snippets should return empty list', () => {
-    const snippets = settings.setSnippets();
+  test('given no snippets should return empty list', async () => {
+    const snippets = await cfg.setSnippets();
     expect(snippets).toEqual([]);
   });
 
-  test('given non empty snippets should return the list', () => {
-    const snippets = settings.setSnippets([{ id: 1 }]);
-    expect(snippets).toEqual([{ id: 1 }]);
-  });
-});
+  // getSnippets
 
-describe('Settings getSnippets', () => {
-  test('given no snippets should return empty list', () => {
-    settings.setSnippets();
-    expect(settings.getSnippets()).toEqual([]);
+  test('given no snippets should return empty list', async () => {
+    const store = storage(service);
+    cfg = settings(store);
+    await cfg.setSnippets();
+    expect(await cfg.getSnippets()).toEqual([]);
   });
 
-  test('given non empty snippets should return the list', () => {
-    settings.setSnippets([{ id: 1 }]);
-    expect(settings.getSnippets()).toEqual([{ id: 1 }]);
+  // fetchSnippets
+
+  test('should return an empty list if nothing to fetch', async () => {
+    api.getSnippets.mockImplementationOnce(() => Promise.resolve([]));
+    const result = await cfg.fetchSnippets();
+    expect(result).toEqual([]);
+  });
+
+  test('shoud fail if error', async () => {
+    const error = {
+      status: 'unknown',
+      data: {
+        message: 'Unknown',
+      },
+    };
+    api.getSnippets.mockImplementationOnce(() => Promise.reject(error));
+    try {
+      await cfg.fetchSnippets();
+    } catch (err) {
+      expect(err).toEqual(error);
+    }
   });
 });

@@ -17,7 +17,6 @@
     </template>
     <input type="submit" value="Log in" :disabled="isLoading" />
     <p>New Here? <a href="https://app.capijzo.com/register" target="_blank">Create Account</a></p>
-    <!-- <button type="button" @click="testPost">Test Message</button> -->
   </form>
   <!-- Forgot Password -->
   <!-- New Account -->
@@ -42,12 +41,6 @@ export default Vue.extend({
     };
   },
   methods: {
-    //    testPost() {
-    //      console.log('llamando testPost');
-    //      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    //        chrome.tabs.sendMessage(tabs[0].id, { action: 'open_dialog_box' }, function (response) {});
-    //      });
-    //    },
     async doLogin(event) {
       event.preventDefault();
       this.isLoading = true;

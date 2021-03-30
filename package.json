@@ -7,7 +7,7 @@
     "watch": "parcel watch src/*.html --out-dir dist",
     "start": "run-s clean build:bg build:cs watch",
     "prettier": "prettier --write ./src",
-    "test": "jest",
+    "test": "jest --collect-coverage",
     "test:watch": "jest --watch",
     "build:app": "parcel build src/*.html --out-dir dist",
     "build:bg": "parcel build src/background.js --no-minify --out-dir dist",
@@ -63,6 +63,12 @@
           }
         }
       ]
+    ]
+  },
+  "jest": {
+    "collectCoverage": true,
+    "coverageReporters": [
+      "html"
     ]
   },
   "browserslist": [

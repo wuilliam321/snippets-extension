@@ -15,9 +15,6 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
     chrome.storage.sync.get(['access_token', 'user', 'token_type'], function(result) {
-        console.log('Value currently is ' + result.access_token);
-        console.log('user', result.user);
-        console.log('token_type', result.token_type);
         if (to.name === 'login' && result.access_token) {
             next({ name: 'dashboard' });
         } else {

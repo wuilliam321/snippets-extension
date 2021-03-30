@@ -23,17 +23,19 @@ const OPTIONS = {
 };
 
 function Parser() {
-  const createTemplateFromHTML = (html) => {
+  const createTemplateFromHTML = (htmlText) => {
     const el = document.createElement('template');
-    el.innerHTML = html;
+    el.innerHTML = htmlText;
     return el;
   };
-  const parseHtml = (html) => {
-    if (!html) {
+
+  const parseTextToHtml = (htmlText) => {
+    if (!htmlText) {
+      // TODO: not tested, what if no html
       return '';
     }
 
-    const el = createTemplateFromHTML(html);
+    const el = createTemplateFromHTML(htmlText);
     return el.content;
   };
 
@@ -42,7 +44,7 @@ function Parser() {
   };
 
   return {
-    parseHtml,
+    parseTextToHtml,
     parseHtmlToText,
   };
 }

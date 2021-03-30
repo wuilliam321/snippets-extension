@@ -5,7 +5,7 @@
     <div class="row">
       <div class="col mt-5">
         <div class="login-logo text-center">
-          <img src="../static/Capijzo-logo.svg" alt width="45" />
+          <img src="../static/capijzo-header-logo.svg" alt />
         </div>
       </div>
     </div>
@@ -83,12 +83,6 @@ export default Vue.extend({
     };
   },
   methods: {
-    //    testPost() {
-    //      console.log('llamando testPost');
-    //      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    //        chrome.tabs.sendMessage(tabs[0].id, { action: 'open_dialog_box' }, function (response) {});
-    //      });
-    //    },
     async doLogin(event) {
       event.preventDefault();
       this.isLoading = true;

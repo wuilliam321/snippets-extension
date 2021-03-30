@@ -52,7 +52,30 @@ async function getSnippets() {
     }
 }
 
+async function getUser() {
+    const authInfo = await getAuthInfo();
+    try {
+        const url = 'https://app.capijzo.com/api/auth/user';
+        const res = await axios.get(url, {
+            headers: { Authorization: authInfo.token_type + ' ' + authInfo.access_token },
+        });
+        return res.data;
+    } catch (err) {
+        let error = {
+            status: 'unknown',
+            data: {
+                message: 'Unknown',
+            },
+        };
+        if (err && err.response) {
+            error = err.response;
+        }
+        throw error;
+    }
+}
+
 export default {
-    login: login,
-    getSnippets: getSnippets,
+    login,
+    getSnippets,
+    getUser,
 };

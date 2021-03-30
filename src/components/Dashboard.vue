@@ -16,7 +16,9 @@ import api from '../core/api';
 
 export default Vue.extend({
   async mounted() {
-    const snippets = await api.getSnippets()
+    const snippets = await api.getSnippets();
+    const user = await api.getUser();
+    console.log('hola', user);
   },
   methods: {
     async doLogout(event) {

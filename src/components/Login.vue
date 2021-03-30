@@ -2,68 +2,66 @@
   <!-- Header -->
   <!--   Logo -->
   <div class="container auth-section">
-      <div class="row content-center">
-      <div class="text-center auth-content">
-        <div class="row">
-          <div class="col">
-            <div class="login-logo text-center">
-              <img src="../static/Capijzo-logo.svg" alt width="45">
-            </div>
-          </div>
+    <div class="row">
+      <div class="col mt-5">
+        <div class="login-logo text-center">
+          <img src="../static/Capijzo-logo.svg" alt width="45" />
         </div>
-  <!--   Title -->
-  <div class="row">
-          <div class="col">
-            <p class="text-center text-center login-continue">Log in to continue</p>
-          </div>
+      </div>
+    </div>
+
+    <!-- Title -->
+    <div class="row">
+      <div class="col">
+        <p class="text-center text-center login-continue">Log in to continue</p>
+      </div>
+    </div>
+    <!-- Social Login -->
+    <div class="row">
+      <div class="col">
+        <button class="btn btn-default form-control">
+          <img src="../static/facebook.png" width="20" alt />
+          <span>Log in with Facebook</span>
+        </button>
+      </div>
+      <div class="col">
+        <button class="btn btn-default form-control">
+          <img src="../static/google.png" width="20" alt />
+          <span>Log in with Google</span>
+        </button>
+      </div>
+    </div>
+    <!-- Form Login -->
+    <div class="row line-row">
+      <div class="col-md-12 d-flex justify-content-between flex-wrap line-group">
+        <div class="line"></div>
+        <div class="line or">
+          <p>or</p>
+        </div>
+        <div class="line"></div>
+      </div>
+    </div>
+    <form @submit="doLogin">
+      <label for="email">Email Address</label>
+      <input type="text" v-model="email" name="email" :disabled="isLoading" />
+      <label for="password">Password</label>
+      <input type="password" v-model="password" name="password" :disabled="isLoading" />
+      <template v-if="showError">
+        <p>Incorrect Email or Password</p>
+      </template>
+      <template v-if="isLoading">
+        <Loader></Loader>
+      </template>
+      <input type="submit" value="Log in" :disabled="isLoading" />
+      <p>
+        New Here?
+        <a href="https://app.capijzo.com/register" target="_blank" id="newHere">Create Account</a>
+      </p>
+      <!-- <button type="button" @click="testPost">Test Message</button> -->
+    </form>
+    <!-- Forgot Password -->
+    <!-- New Account -->
   </div>
-  <!-- Social Login -->
-  <div class="login-with">
-          <div class="row">
-            <div class="col-md-12 d-flex justify-content-between flex-wrap">
-              <div class="button-with">
-                <button class="btn btn-default form-control">
-                  <img src="../static/facebook.png" width="20" alt>
-                  <span>Log in with Facebook</span>
-                </button>
-              </div>
-              <div class="button-with">
-                <button class="btn btn-default form-control">
-                  <img src="../static/google.png" width="20" alt>
-                  <span>Log in with Google</span>
-                </button>
-              </div>
-            </div>
-          </div>
-         </div>
-  <!-- Form Login -->
-  <div class="row line-row">
-            <div class="col-md-12 d-flex justify-content-between flex-wrap line-group">
-              <div class="line"></div>
-              <div class="line or">
-                <p>or</p>
-              </div>
-              <div class="line"></div>
-            </div>
-          </div>
-  <form @submit="doLogin">
-          
-    <label for="email">Email Address</label>
-    <input type="text" v-model="email" name="email" :disabled="isLoading" />
-    <label for="password">Password</label>
-    <input type="password" v-model="password" name="password" :disabled="isLoading" />
-    <template v-if="showError">
-      <p>Incorrect Email or Password</p>
-    </template>
-    <template v-if="isLoading">
-      <Loader></Loader>
-    </template>
-    <input type="submit" value="Log in" :disabled="isLoading" />
-    <p>New Here? <a href="https://app.capijzo.com/register" target="_blank" id="newHere">Create Account</a></p>
-    <!-- <button type="button" @click="testPost">Test Message</button> -->  
-  </form>
-  <!-- Forgot Password -->
-  <!-- New Account -->
 </template>
 
 <script>
@@ -97,6 +95,7 @@ export default Vue.extend({
       this.showError = false;
 
       if (!validator.isValidForm(this.email, this.password)) {
+        this.isLoading = false;
         this.showError = true;
         return;
       }

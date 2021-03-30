@@ -1,3 +1,31 @@
 #form-error {
-  display: none;
+    display: none;
+}
+
+body {
+    /* display: block;
+    margin: 10px;
+    height: 300px; */
+    width: 400px;
+}
+
+
+/* .auth-section {
+padding-top: 40px; 
+}
+
+.auth-section form {
+    padding-top: 40px; 
+} */
+
+.auth-section form label {
+    display: block;
+    /* padding-top: 40px; */
+}
+
+.auth-section form input[type="password"],
+.auth-section form input[type="text"] {
+    display: block;
+    width: 100%;
+    /* padding-top: 40px; */
 }

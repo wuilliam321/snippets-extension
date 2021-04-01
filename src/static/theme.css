@@ -1,3 +1,7 @@
 #form-error {
   display: none;
 }
+
+body {
+    width: 400px;
+}

@@ -1,24 +1,35 @@
 <template>
-  <!-- Header -->
-  <!--   Profile -->
-  <!--   Add Button -->
-  <!-- Productivity Stats -->
-  <!--   Hours Saved -->
-  <!--   Typing Speed -->
-  <!--   Inserted Words -->
-  <!-- Footer -->
-  <a href="#" @click="doLogout">Log out</a>
+  <div class="container">
+    <!-- Header -->
+    <Header></Header>
+    <!-- Productivity Stats -->
+    <ProductivityStats></ProductivityStats>
+    <!--   Hours Saved -->
+    <!--   Typing Speed -->
+    <!--   Inserted Words -->
+    <!-- Footer -->
+    <Footer></Footer>
+    <div class="row">
+      <div class="col">
+        <a href="#" @click="doLogout">Log out</a>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import Vue from 'vue';
 import settings from '../core/settings';
 import storage from '../core/storage';
+import Header from '../components/Header';
 
 const store = storage(chrome.storage.sync);
 const cfg = settings(store);
 
 export default Vue.extend({
+  components: {
+    Header,
+  },
   async mounted() {
     // TODO: we need in some way pull this in a polling
     await cfg.fetchSnippets();

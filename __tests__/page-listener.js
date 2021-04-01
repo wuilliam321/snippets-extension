@@ -397,4 +397,17 @@ describe('Replacement', () => {
     expect(elem.innerHTML).toBe(expected);
     expect(result.innerHTML).toBe(expected);
   });
+
+  test('on `/` pressed isTriggerKey() should true but should not replace anything', async () => {
+    const store = storage(service);
+    const cfg = settings(store);
+    const listenerWithMock = pageListener.PageListener(cfg);
+    listenerWithMock.replacePlainText = jest.fn()
+    const elem = document.createElement('textarea');
+    elem.addEventListener(eventName, listenerWithMock.inputListener);
+    elem.dispatchEvent(new InputEvent(eventName, { data: '/', path: [elem] }));
+    elem.value = '/'; // hardcoded because unavailable to trigger change on node
+    expect(listenerWithMock.isTriggerKey()).toBe(true);
+    expect(listenerWithMock.replacePlainText).toHaveBeenCalled()
+  });
 });

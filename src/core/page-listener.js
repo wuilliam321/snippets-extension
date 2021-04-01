@@ -44,7 +44,7 @@ function PageListener(cfg) {
       let preCaretTextRange = doc.body.createTextRange();
       preCaretTextRange.moveToElementText(element);
       preCaretTextRange.setEndPoint('EndToEnd', textRange);
-        // console.log('preCaretRange 2', preCaretRange.text);
+      // console.log('preCaretRange 2', preCaretRange.text);
       caretOffset = preCaretTextRange.text.length;
     }
     return caretOffset;
@@ -76,11 +76,16 @@ function PageListener(cfg) {
     const foundShortcode = getShortcode(prevText);
     // TODO: move cfg dependecy out of here
     const foundSnippet = await cfg.getSnippetByShortcode(foundShortcode);
+    //
     // TODO aqui voy algo da -1 no se que es (tiene que ver con los content edible
+    // aquuiiiiii
     // console.log('foundSnippet', foundSnippet);
-    if (foundSnippet) {
+    if (foundSnippet !== -1) {
       // console.log('replace', element.innerHTML, foundSnippet.shortcode + triggerKey);
-      const tempText = element.innerHTML.replace(foundSnippet.shortcode + triggerKey, foundSnippet.text);
+      const tempText = element.innerHTML.replace(
+        foundSnippet.shortcode + triggerKey,
+        foundSnippet.text,
+      );
       element.innerHTML = tempText;
     }
     clearCurrentWord();
@@ -108,7 +113,7 @@ function PageListener(cfg) {
     // TODO: move cfg dependecy out of here
     const foundSnippet = await cfg.getSnippetByShortcode(foundShortcode);
     // console.log('foundSnippet', foundSnippet, text);
-    if (foundSnippet) {
+    if (foundSnippet !== -1) {
       const tempText = prevText.replace(
         foundSnippet.shortcode + triggerKey,
         parser.parseHtmlToText(foundSnippet.text),
@@ -123,6 +128,40 @@ function PageListener(cfg) {
     currentWord = '';
   };
 
+  const inputListener = async (event) => {
+    console.log('inputListener called', event.path);
+    await buildCurrentWord(event);
+    console.log('input', event);
+    const [element] = event.path;
+    const element = event.path[0];
+    const editable = element.hasAttribute('contenteditable');
+    if (editable) {
+      console.log('not editable here', event);
+      if (isTriggerKey()) {
+        // console.log('editable html', element.innerHTML);
+        // TODO: need a refactor here first, too repetitive code
+        // TODO: i need a way to detect if the word is only the trigger, do not replace anything
+        // TODO: replace only if a shortcode is found
+        const pos = getCaretCharacterOffsetWithin(element);
+        // console.log('pos editable', pos);
+        const result = await replaceHtml(element, pos);
+        element.innerHTML = result.innerHTML;
+      }
+    } else {
+      console.log('not editable here', event);
+      if (isTriggerKey()) {
+        // console.log('value', element.value);
+        // TODO: i need a way to detect if the word is only the trigger, do not replace anything
+        // TODO: replace only if a shortcode is found
+        const pos = getCaretCharacterOffsetWithin(element);
+        // console.log('pos input', pos);
+        const elem = await replacePlainText(element, pos);
+        element.value = elem.value;
+      }
+    }
+    console.log('outer', element.outerHTML);
+  };
+
   return {
     buildCurrentWord,
     isTriggerKey,
@@ -131,6 +170,7 @@ function PageListener(cfg) {
     replacePlainText,
     clearCurrentWord,
     getCaretCharacterOffsetWithin,
+    inputListener,
   };
 }
 

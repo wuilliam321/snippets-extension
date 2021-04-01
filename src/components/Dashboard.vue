@@ -3,12 +3,12 @@
     <!-- Header -->
     <Header></Header>
     <!-- Productivity Stats -->
-    <ProductivityStats></ProductivityStats>
+    <!--<ProductivityStats></ProductivityStats>-->
     <!--   Hours Saved -->
     <!--   Typing Speed -->
     <!--   Inserted Words -->
     <!-- Footer -->
-    <Footer></Footer>
+    <!--<Footer></Footer>-->
     <div class="row">
       <div class="col">
         <a href="#" @click="doLogout">Log out</a>

@@ -49,27 +49,16 @@ describe('Detect shortcode', () => {
     listener = pageListener.PageListener(cfg);
   });
 
-  beforeEach(() => listener.clearCurrentWord());
-
   // input and textarea
 
   test('on `a` pressed isTriggerKey() should false', () => {
     const elem = document.createElement('textarea');
-    elem.addEventListener(eventName, listener.buildCurrentWord);
-    elem.dispatchEvent(new InputEvent(eventName, { data: 'a' }));
-    expect(listener.isTriggerKey()).toBe(false);
-  });
-
-  test('on no key press', () => {
-    const elem = document.createElement('textarea');
-    elem.addEventListener(eventName, listener.buildCurrentWord);
     elem.dispatchEvent(new InputEvent(eventName, { data: null }));
     expect(listener.isTriggerKey()).toBe(false);
   });
 
   test('on `aa` pressed isTriggerKey() should false', () => {
     const elem = document.createElement('textarea');
-    elem.addEventListener(eventName, listener.buildCurrentWord);
     elem.dispatchEvent(new InputEvent(eventName, { data: 'a' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: 'a' }));
     expect(listener.isTriggerKey()).toBe(false);
@@ -78,7 +67,6 @@ describe('Detect shortcode', () => {
 
   test('on `aaa` pressed isTriggerKey() should false', () => {
     const elem = document.createElement('textarea');
-    elem.addEventListener(eventName, listener.buildCurrentWord);
     elem.dispatchEvent(new InputEvent(eventName, { data: 'a' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: 'a' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: 'a' }));
@@ -88,31 +76,26 @@ describe('Detect shortcode', () => {
 
   test('on `aaa/` pressed isTriggerKey() should true', () => {
     const elem = document.createElement('textarea');
-    elem.addEventListener(eventName, listener.buildCurrentWord);
     elem.dispatchEvent(new InputEvent(eventName, { data: 'a' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: 'a' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: 'a' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: '/' }));
     elem.value = 'aaa/'; // hardcoded because unavailable to trigger change on node
-    expect(listener.isTriggerKey()).toBe(true);
     expect(listener.getShortcode(elem.value)).toBe('aaa');
   });
 
   test('on `ggg/` pressed isTriggerKey() should true and short code should be ggg', () => {
     const elem = document.createElement('textarea');
-    elem.addEventListener(eventName, listener.buildCurrentWord);
     elem.dispatchEvent(new InputEvent(eventName, { data: 'g' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: 'g' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: 'g' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: '/' }));
     elem.value = 'ggg/'; // hardcoded because unavailable to trigger change on node
-    expect(listener.isTriggerKey()).toBe(true);
     expect(listener.getShortcode(elem.value)).toBe('ggg');
   });
 
   test('on `gg ggg/` pressed isTriggerKey() should true and short code should be ggg', () => {
     const elem = document.createElement('textarea');
-    elem.addEventListener(eventName, listener.buildCurrentWord);
     elem.dispatchEvent(new InputEvent(eventName, { data: 'g' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: 'g' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: ' ' }));
@@ -121,7 +104,6 @@ describe('Detect shortcode', () => {
     elem.dispatchEvent(new InputEvent(eventName, { data: 'g' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: '/' }));
     elem.value = 'gg ggg/'; // hardcoded because unavailable to trigger change on node
-    expect(listener.isTriggerKey()).toBe(true);
     expect(listener.getShortcode(elem.value)).toBe('ggg');
   });
 
@@ -130,7 +112,6 @@ describe('Detect shortcode', () => {
   test('contenteditable on `a` pressed isTriggerKey() should false', () => {
     const elem = document.createElement('div');
     elem.setAttribute('contenteditable', true);
-    elem.addEventListener(eventName, listener.buildCurrentWord);
     elem.dispatchEvent(new InputEvent(eventName, { data: 'a' }));
     expect(listener.isTriggerKey()).toBe(false);
   });
@@ -138,7 +119,6 @@ describe('Detect shortcode', () => {
   test('contenteditable on no key press', () => {
     const elem = document.createElement('div');
     elem.setAttribute('contenteditable', true);
-    elem.addEventListener(eventName, listener.buildCurrentWord);
     elem.dispatchEvent(new InputEvent(eventName, { data: null }));
     expect(listener.isTriggerKey()).toBe(false);
   });
@@ -146,7 +126,6 @@ describe('Detect shortcode', () => {
   test('contenteditable on `aa` pressed isTriggerKey() should false', () => {
     const elem = document.createElement('div');
     elem.setAttribute('contenteditable', true);
-    elem.addEventListener(eventName, listener.buildCurrentWord);
     elem.dispatchEvent(new InputEvent(eventName, { data: 'a' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: 'a' }));
     expect(listener.isTriggerKey()).toBe(false);
@@ -156,7 +135,6 @@ describe('Detect shortcode', () => {
   test('contenteditable on `aaa` pressed isTriggerKey() should false', () => {
     const elem = document.createElement('div');
     elem.setAttribute('contenteditable', true);
-    elem.addEventListener(eventName, listener.buildCurrentWord);
     elem.dispatchEvent(new InputEvent(eventName, { data: 'a' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: 'a' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: 'a' }));
@@ -167,33 +145,28 @@ describe('Detect shortcode', () => {
   test('contenteditable on `aaa/` pressed isTriggerKey() should true', () => {
     const elem = document.createElement('div');
     elem.setAttribute('contenteditable', true);
-    elem.addEventListener(eventName, listener.buildCurrentWord);
     elem.dispatchEvent(new InputEvent(eventName, { data: 'a' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: 'a' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: 'a' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: '/' }));
     elem.innerHTML = '<p>aaa/</p>'; // hardcoded because unavailable to trigger change on node
-    expect(listener.isTriggerKey()).toBe(true);
     expect(listener.getShortcode(parser.parseHtmlToText(elem.innerHTML))).toBe('aaa');
   });
 
   test('contenteditable on `ggg/` pressed isTriggerKey() should true and short code should be ggg', () => {
     const elem = document.createElement('div');
     elem.setAttribute('contenteditable', true);
-    elem.addEventListener(eventName, listener.buildCurrentWord);
     elem.dispatchEvent(new InputEvent(eventName, { data: 'g' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: 'g' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: 'g' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: '/' }));
     elem.innerHTML = '<p>ggg/</p>'; // hardcoded because unavailable to trigger change on node
-    expect(listener.isTriggerKey()).toBe(true);
     expect(listener.getShortcode(parser.parseHtmlToText(elem.innerHTML))).toBe('ggg');
   });
 
   test('contenteditable on `gg ggg/` pressed isTriggerKey() should true and short code should be ggg', () => {
     const elem = document.createElement('div');
     elem.setAttribute('contenteditable', true);
-    elem.addEventListener(eventName, listener.buildCurrentWord);
     elem.dispatchEvent(new InputEvent(eventName, { data: 'g' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: 'g' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: ' ' }));
@@ -202,20 +175,17 @@ describe('Detect shortcode', () => {
     elem.dispatchEvent(new InputEvent(eventName, { data: 'g' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: '/' }));
     elem.innerHTML = '<p>gg ggg/</p>'; // hardcoded because unavailable to trigger change on node
-    expect(listener.isTriggerKey()).toBe(true);
     expect(listener.getShortcode(parser.parseHtmlToText(elem.innerHTML))).toBe('ggg');
   });
 
   test('contenteditable on `gg aaa/ gg` in the middle pressed isTriggerKey() should true and short code should be ggg', async () => {
     const elem = document.createElement('div');
     elem.setAttribute('contenteditable', true);
-    elem.addEventListener(eventName, listener.buildCurrentWord);
     elem.dispatchEvent(new InputEvent(eventName, { data: 'a' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: 'a' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: 'a' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: '/' }));
     elem.innerHTML = '<p>gg aaa/ gg</p>'; // hardcoded because unavailable to trigger change on node
-    expect(listener.isTriggerKey()).toBe(true);
     const result = await listener.replaceHtml(elem, 7);
     expect(result.innerHTML).toBe(
       '<p>gg </p><p><s>Strike</s></p><p><br></p><h1>Header 1</h1><ul><li>List</li><li class="ql-indent-1">List Padding</li></ul> gg<p></p>',
@@ -276,7 +246,7 @@ describe('Replacement', () => {
     elem.value = 'a bb/ a';
     const result = await listener.replacePlainText(elem);
     expect(elem.value).toBe('a bb/ a');
-    expect(result.value).toBe('a bb/ a');
+    expect(result).toBe(-1);
   });
 
   test('given a shortcode in the middle but cursor is in that position should replace it', async () => {
@@ -317,7 +287,7 @@ describe('Replacement', () => {
     elem.value = 'non-existent/';
     const result = await listener.replacePlainText(elem);
     expect(elem.value).toBe('non-existent/');
-    expect(result.value).toBe('non-existent/');
+    expect(result).toBe(-1);
   });
 
   // replaceHtml
@@ -374,7 +344,7 @@ describe('Replacement', () => {
     const result = await listener.replaceHtml(elem, 11);
     const expected = '<p>aa bb/ a</p>';
     expect(elem.innerHTML).toBe(expected);
-    expect(result.innerHTML).toBe(expected);
+    expect(result).toBe(-1);
   });
 
   test('contenteditable given a shortcode in with text before should replace it', async () => {
@@ -395,19 +365,25 @@ describe('Replacement', () => {
     const result = await listener.replaceHtml(elem, 16);
     const expected = '<p>non-existent/</p>';
     expect(elem.innerHTML).toBe(expected);
-    expect(result.innerHTML).toBe(expected);
+    expect(result).toBe(-1);
   });
 
-  test('on `/` pressed isTriggerKey() should true but should not replace anything', async () => {
-    const store = storage(service);
-    const cfg = settings(store);
-    const listenerWithMock = pageListener.PageListener(cfg);
-    listenerWithMock.replacePlainText = jest.fn()
-    const elem = document.createElement('textarea');
-    elem.addEventListener(eventName, listenerWithMock.inputListener);
-    elem.dispatchEvent(new InputEvent(eventName, { data: '/', path: [elem] }));
-    elem.value = '/'; // hardcoded because unavailable to trigger change on node
-    expect(listenerWithMock.isTriggerKey()).toBe(true);
-    expect(listenerWithMock.replacePlainText).toHaveBeenCalled()
-  });
+  // TODO: add testing library to effectively simulate button actions
+  // oeuaoeu
+  // test('on `/` pressed isTriggerKey() should true but should not replace anything', async () => {
+  //   const store = storage(service);
+  //   const cfg = settings(store);
+  //   const listenerWithMock = pageListener.PageListener(cfg);
+  //   listenerWithMock.replacePlainText = jest.fn();
+  //   const elem = document.createElement('textarea');
+  //   elem.addEventListener(eventName, listenerWithMock.inputListener);
+  //   document.body.append(elem);
+  //   const e = screen.getByRole('textbox');
+  //   userEvent.type(e, '/');
+
+  //   await waitFor(() => {
+  //     expect(listenerWithMock.isTriggerKey()).toBe(true);
+  //     expect(listenerWithMock.replacePlainText).toHaveBeenCalled();
+  //   });
+  // });
 });

@@ -2,22 +2,9 @@ import parser from './parser';
 
 function PageListener(cfg) {
   const triggerKey = '/';
-  let currentKey;
-  let currentWord = '';
 
-  const buildCurrentWord = async (event) => {
-    currentKey = event.data;
-    if (event.data === ' ') {
-      currentWord = '';
-    }
-    if (!isTriggerKey()) {
-      currentWord += event.data;
-      currentWord = currentWord.trim();
-    }
-  };
-
-  const isTriggerKey = () => {
-    if (currentKey === triggerKey) {
+  const isTriggerKey = (key) => {
+    if (key === triggerKey) {
       return true;
     }
     return false;
@@ -65,12 +52,12 @@ function PageListener(cfg) {
       return Promise.resolve(element);
     }
 
-    // console.log('element.textContent', element.textContent);
+    console.log('element.textContent', element.textContent);
     let prevText = element.textContent;
     if (oneIndexCaretPosition > 0) {
       prevText = element.textContent.slice(0, oneIndexCaretPosition);
     }
-    // console.log('prev', prevText, parser.parseTextToHtml(prevText));
+    console.log('prev', prevText, parser.parseTextToHtml(prevText));
     // console.log('next', nextText);
 
     const foundShortcode = getShortcode(prevText);
@@ -79,16 +66,16 @@ function PageListener(cfg) {
     //
     // TODO aqui voy algo da -1 no se que es (tiene que ver con los content edible
     // aquuiiiiii
-    // console.log('foundSnippet', foundSnippet);
-    if (foundSnippet !== -1) {
-      // console.log('replace', element.innerHTML, foundSnippet.shortcode + triggerKey);
-      const tempText = element.innerHTML.replace(
-        foundSnippet.shortcode + triggerKey,
-        foundSnippet.text,
-      );
-      element.innerHTML = tempText;
+    console.log('foundSnippet', foundSnippet);
+    if (foundSnippet === -1) {
+      return Promise.resolve(-1);
     }
-    clearCurrentWord();
+    // console.log('replace', element.innerHTML, foundSnippet.shortcode + triggerKey);
+    const tempText = element.innerHTML.replace(
+      foundSnippet.shortcode + triggerKey,
+      foundSnippet.text,
+    );
+    element.innerHTML = tempText;
     // console.log('outer', element.outerHTML);
     return Promise.resolve(element);
   };
@@ -113,64 +100,23 @@ function PageListener(cfg) {
     // TODO: move cfg dependecy out of here
     const foundSnippet = await cfg.getSnippetByShortcode(foundShortcode);
     // console.log('foundSnippet', foundSnippet, text);
-    if (foundSnippet !== -1) {
-      const tempText = prevText.replace(
-        foundSnippet.shortcode + triggerKey,
-        parser.parseHtmlToText(foundSnippet.text),
-      );
-      element.value = tempText + nextText;
+    if (foundSnippet === -1) {
+      return Promise.resolve(-1);
     }
-    clearCurrentWord();
+    const tempText = prevText.replace(
+      foundSnippet.shortcode + triggerKey,
+      parser.parseHtmlToText(foundSnippet.text),
+    );
+    element.value = tempText + nextText;
     return Promise.resolve(element);
   };
 
-  const clearCurrentWord = () => {
-    currentWord = '';
-  };
-
-  const inputListener = async (event) => {
-    console.log('inputListener called', event.path);
-    await buildCurrentWord(event);
-    console.log('input', event);
-    const [element] = event.path;
-    const element = event.path[0];
-    const editable = element.hasAttribute('contenteditable');
-    if (editable) {
-      console.log('not editable here', event);
-      if (isTriggerKey()) {
-        // console.log('editable html', element.innerHTML);
-        // TODO: need a refactor here first, too repetitive code
-        // TODO: i need a way to detect if the word is only the trigger, do not replace anything
-        // TODO: replace only if a shortcode is found
-        const pos = getCaretCharacterOffsetWithin(element);
-        // console.log('pos editable', pos);
-        const result = await replaceHtml(element, pos);
-        element.innerHTML = result.innerHTML;
-      }
-    } else {
-      console.log('not editable here', event);
-      if (isTriggerKey()) {
-        // console.log('value', element.value);
-        // TODO: i need a way to detect if the word is only the trigger, do not replace anything
-        // TODO: replace only if a shortcode is found
-        const pos = getCaretCharacterOffsetWithin(element);
-        // console.log('pos input', pos);
-        const elem = await replacePlainText(element, pos);
-        element.value = elem.value;
-      }
-    }
-    console.log('outer', element.outerHTML);
-  };
-
   return {
-    buildCurrentWord,
     isTriggerKey,
     getShortcode,
     replaceHtml,
     replacePlainText,
-    clearCurrentWord,
     getCaretCharacterOffsetWithin,
-    inputListener,
   };
 }
 

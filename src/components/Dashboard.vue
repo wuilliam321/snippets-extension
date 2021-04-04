@@ -3,7 +3,7 @@
     <!-- Header -->
     <Header></Header>
     <!-- Productivity Stats -->
-    <!--<ProductivityStats></ProductivityStats>-->
+    <ProductivityStats></ProductivityStats>
     <!--   Hours Saved -->
     <!--   Typing Speed -->
     <!--   Inserted Words -->
@@ -22,6 +22,7 @@ import Vue from 'vue';
 import settings from '../core/settings';
 import storage from '../core/storage';
 import Header from '../components/Header';
+import ProductivityStats from '../components/ProductivityStats';
 
 const store = storage(chrome.storage.sync);
 const cfg = settings(store);
@@ -29,6 +30,7 @@ const cfg = settings(store);
 export default Vue.extend({
   components: {
     Header,
+    ProductivityStats,
   },
   async mounted() {
     // TODO: we need in some way pull this in a polling

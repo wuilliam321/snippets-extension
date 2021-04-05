@@ -1,6 +1,8 @@
 import api from './api';
 
 function Settings(store) {
+  const triggerKey = '/'; // TODO: Repeated code
+
   if (!store) {
     throw new Error('store should be provided');
   }
@@ -34,6 +36,15 @@ function Settings(store) {
     return Promise.resolve([]);
   };
 
+  const getMapSnippets = async () => {
+    const snippets = await getSnippets();
+    const snippetsMap = snippets.reduce((prev, curr) => {
+      prev[curr.shortcode + triggerKey] = curr;
+      return prev;
+    }, {});
+    return snippetsMap
+  };
+
   const getSnippets = async () => {
     // TODO not tested
     const res = await store.get('snippets');
@@ -62,6 +73,7 @@ function Settings(store) {
     getSnippetByShortcode,
     setSnippets,
     getSnippets,
+    getMapSnippets,
     fetchSnippets,
   };
 }

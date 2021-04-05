@@ -23,7 +23,6 @@ function PageListener(cfg) {
         let preCaretRange = range.cloneRange();
         preCaretRange.selectNodeContents(element);
         preCaretRange.setEnd(range.endContainer, range.endOffset);
-        // console.log('preCaretRange 1', preCaretRange);
         caretOffset = preCaretRange.toString().length;
       }
     } else if ((sel = doc.selection) && sel.type != 'Control') {
@@ -31,16 +30,26 @@ function PageListener(cfg) {
       let preCaretTextRange = doc.body.createTextRange();
       preCaretTextRange.moveToElementText(element);
       preCaretTextRange.setEndPoint('EndToEnd', textRange);
-      // console.log('preCaretRange 2', preCaretRange.text);
       caretOffset = preCaretTextRange.text.length;
     }
     return caretOffset;
   };
 
-  const getShortcode = (text) => {
-    const textParts = text.split(/(\s+)/);
-    const shortcodeWithTriggerKey = textParts[textParts.length - 1];
-    return shortcodeWithTriggerKey.replace(triggerKey, '');
+  const getPossibleShortcodes = (text) => {
+    let parts = text.split(/(\s+)/);
+    parts = parts.filter((p) => (p.trim() && p.length > 0) || p.indexOf(triggerKey) !== -1);
+    return parts;
+  };
+
+  const getShortcode = async (text) => {
+    const snippetsMap = await cfg.getMapSnippets();
+    const possibleShortcodes = getPossibleShortcodes(text);
+    for (let i = 0; i <= possibleShortcodes.length; i++) {
+      if (snippetsMap[possibleShortcodes[i]] !== undefined) {
+        return possibleShortcodes[i].replace('/', '');
+      }
+    }
+    return '';
   };
 
   // TODO aqui voy, refactor esto que los metodos hacen todo lo mismo y estan feos
@@ -52,15 +61,16 @@ function PageListener(cfg) {
       return Promise.resolve(element);
     }
 
-    console.log('element.textContent', element.textContent);
-    let prevText = element.textContent;
+    console.log('editable pos', oneIndexCaretPosition);
+    console.log('editable element.innerText', element.innerText);
+    console.log('editable element.innerHTML', element.innerHTML);
+    let prevText = element.innerText;
     if (oneIndexCaretPosition > 0) {
-      prevText = element.textContent.slice(0, oneIndexCaretPosition);
+      prevText = element.innerText.slice(0, oneIndexCaretPosition);
     }
     console.log('prev', prevText, parser.parseTextToHtml(prevText));
-    // console.log('next', nextText);
 
-    const foundShortcode = getShortcode(prevText);
+    const foundShortcode = await getShortcode(prevText);
     // TODO: move cfg dependecy out of here
     const foundSnippet = await cfg.getSnippetByShortcode(foundShortcode);
     //
@@ -70,13 +80,12 @@ function PageListener(cfg) {
     if (foundSnippet === -1) {
       return Promise.resolve(-1);
     }
-    // console.log('replace', element.innerHTML, foundSnippet.shortcode + triggerKey);
     const tempText = element.innerHTML.replace(
       foundSnippet.shortcode + triggerKey,
+      // parser.parseHtmlToText(foundSnippet.text), // TODO remove this parser in given websites like linked in chat messages
       foundSnippet.text,
     );
     element.innerHTML = tempText;
-    // console.log('outer', element.outerHTML);
     return Promise.resolve(element);
   };
 
@@ -88,6 +97,8 @@ function PageListener(cfg) {
       return Promise.resolve(element);
     }
 
+    console.log('pos', oneIndexCaretPosition);
+    console.log('element.value', element.value);
     let prevText = element.value;
     let nextText = '';
     if (oneIndexCaretPosition > 0) {
@@ -95,11 +106,9 @@ function PageListener(cfg) {
       nextText = element.value.slice(oneIndexCaretPosition, element.value.length);
     }
 
-    // console.log('text', text);
-    const foundShortcode = getShortcode(prevText);
+    const foundShortcode = await getShortcode(prevText);
     // TODO: move cfg dependecy out of here
     const foundSnippet = await cfg.getSnippetByShortcode(foundShortcode);
-    // console.log('foundSnippet', foundSnippet, text);
     if (foundSnippet === -1) {
       return Promise.resolve(-1);
     }

@@ -84,17 +84,17 @@ describe('Detect shortcode', () => {
     expect(await listener.getShortcode(elem.value)).toBe('aaa');
   });
 
-  test('on `ggg/` pressed isTriggerKey() should true and short code should be ggg', async () => {
+  test('on `ggg/` pressed isTriggerKey() should true and short code should be empty', async () => {
     const elem = document.createElement('textarea');
     elem.dispatchEvent(new InputEvent(eventName, { data: 'g' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: 'g' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: 'g' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: '/' }));
     elem.value = 'ggg/'; // hardcoded because unavailable to trigger change on node
-    expect(await listener.getShortcode(elem.value)).toBe('ggg');
+    expect(await listener.getShortcode(elem.value)).toBe('');
   });
 
-  test('on `gg ggg/` pressed isTriggerKey() should true and short code should be ggg', async () => {
+  test('on `gg ggg/` pressed isTriggerKey() should true and short code should be empty', async () => {
     const elem = document.createElement('textarea');
     elem.dispatchEvent(new InputEvent(eventName, { data: 'g' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: 'g' }));
@@ -104,7 +104,7 @@ describe('Detect shortcode', () => {
     elem.dispatchEvent(new InputEvent(eventName, { data: 'g' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: '/' }));
     elem.value = 'gg ggg/'; // hardcoded because unavailable to trigger change on node
-    expect(await listener.getShortcode(elem.value)).toBe('ggg');
+    expect(await listener.getShortcode(elem.value)).toBe('');
   });
 
   // contenteditable
@@ -153,7 +153,7 @@ describe('Detect shortcode', () => {
     expect(await listener.getShortcode(parser.parseHtmlToText(elem.innerHTML))).toBe('aaa');
   });
 
-  test('contenteditable on `ggg/` pressed isTriggerKey() should true and short code should be ggg', async () => {
+  test('contenteditable on `ggg/` pressed isTriggerKey() should true and short code should be empty', async () => {
     const elem = document.createElement('div');
     elem.setAttribute('contenteditable', true);
     elem.dispatchEvent(new InputEvent(eventName, { data: 'g' }));
@@ -161,10 +161,10 @@ describe('Detect shortcode', () => {
     elem.dispatchEvent(new InputEvent(eventName, { data: 'g' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: '/' }));
     elem.innerHTML = '<p>ggg/</p>'; // hardcoded because unavailable to trigger change on node
-    expect(await listener.getShortcode(parser.parseHtmlToText(elem.innerHTML))).toBe('ggg');
+    expect(await listener.getShortcode(parser.parseHtmlToText(elem.innerHTML))).toBe('');
   });
 
-  test('contenteditable on `gg ggg/` pressed isTriggerKey() should true and short code should be ggg', async () => {
+  test('contenteditable on `gg ggg/` pressed isTriggerKey() should true and short code should be empty', async () => {
     const elem = document.createElement('div');
     elem.setAttribute('contenteditable', true);
     elem.dispatchEvent(new InputEvent(eventName, { data: 'g' }));
@@ -175,7 +175,7 @@ describe('Detect shortcode', () => {
     elem.dispatchEvent(new InputEvent(eventName, { data: 'g' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: '/' }));
     elem.innerHTML = '<p>gg ggg/</p>'; // hardcoded because unavailable to trigger change on node
-    expect(await listener.getShortcode(parser.parseHtmlToText(elem.innerHTML))).toBe('ggg');
+    expect(await listener.getShortcode(parser.parseHtmlToText(elem.innerHTML))).toBe('');
   });
 
   test('contenteditable on `gg aaa/ gg` in the middle pressed isTriggerKey() should true and short code should be ggg', async () => {
@@ -244,9 +244,9 @@ describe('Replacement', () => {
   test('given a shortcode in the middle should NOT replace it', async () => {
     const elem = document.createElement('textarea');
     elem.value = 'a bb/ a';
-    const result = await listener.replacePlainText(elem);
+    const result = await listener.replacePlainText(elem, 7);
     expect(elem.value).toBe('a bb/ a');
-    expect(result).toBe(-1);
+    expect(result.value).toBe('a bb/ a');
   });
 
   test('given a shortcode in the middle but cursor is in that position should replace it', async () => {
@@ -287,7 +287,7 @@ describe('Replacement', () => {
     elem.value = 'non-existent/';
     const result = await listener.replacePlainText(elem);
     expect(elem.value).toBe('non-existent/');
-    expect(result).toBe(-1);
+    expect(result.value).toBe('non-existent/');
   });
 
   // replaceHtml
@@ -309,6 +309,7 @@ describe('Replacement', () => {
     const elem = document.createElement('div');
     elem.setAttribute('contenteditable', true);
     elem.innerHTML = '<p>aa/</p>'; // hardcoded because unavailable to trigger change on node
+    elem.innerText = 'aa/'; // hardcoded because unavailable to trigger change on node
     const result = await listener.replaceHtml(elem, 6);
     const expected =
       '<p></p><p><s>Strike</s></p><p><br></p><h1>Header 1</h1><ul><li>List</li><li class="ql-indent-1">List Padding</li></ul><p></p>';
@@ -320,7 +321,9 @@ describe('Replacement', () => {
     const elem = document.createElement('div');
     elem.setAttribute('contenteditable', true);
     elem.innerHTML = '<p>aa</p>'; // hardcoded because unavailable to trigger change on node
+    elem.innerText = 'aa'; // hardcoded because unavailable to trigger change on node
     const result = await listener.replaceHtml(elem, 5);
+    console.log('aqui result', result);
     const expected = '<p>aa</p>';
     expect(elem.innerHTML).toBe(expected);
     expect(result.innerHTML).toBe(expected);
@@ -330,6 +333,7 @@ describe('Replacement', () => {
     const elem = document.createElement('div');
     elem.setAttribute('contenteditable', true);
     elem.innerHTML = '<p>bb/</p>'; // hardcoded because unavailable to trigger change on node
+    elem.innerText = 'bb/'; // hardcoded because unavailable to trigger change on node
     const result = await listener.replaceHtml(elem, 6);
     const expected =
       '<p></p><p><s>Strike</s></p><p><br></p><h1>Header 2</h1><ul><li>List</li><li class="ql-indent-1">List Padding</li></ul><p></p>';
@@ -341,16 +345,18 @@ describe('Replacement', () => {
     const elem = document.createElement('div');
     elem.setAttribute('contenteditable', true);
     elem.innerHTML = '<p>aa bb/ a</p>'; // hardcoded because unavailable to trigger change on node
+    elem.innerText = 'aa bb/ a'; // hardcoded because unavailable to trigger change on node
     const result = await listener.replaceHtml(elem, 11);
     const expected = '<p>aa bb/ a</p>';
     expect(elem.innerHTML).toBe(expected);
-    expect(result).toBe(-1);
+    expect(result.innerHTML).toBe(expected);
   });
 
   test('contenteditable given a shortcode in with text before should replace it', async () => {
     const elem = document.createElement('div');
     elem.setAttribute('contenteditable', true);
     elem.innerHTML = '<p>before bb/</p>'; // hardcoded because unavailable to trigger change on node
+    elem.innerText = 'before bb/'; // hardcoded because unavailable to trigger change on node
     const result = await listener.replaceHtml(elem, 13);
     const expected =
       '<p>before </p><p><s>Strike</s></p><p><br></p><h1>Header 2</h1><ul><li>List</li><li class="ql-indent-1">List Padding</li></ul><p></p>';
@@ -362,10 +368,11 @@ describe('Replacement', () => {
     const elem = document.createElement('div');
     elem.setAttribute('contenteditable', true);
     elem.innerHTML = '<p>non-existent/</p>'; // hardcoded because unavailable to trigger change on node
+    elem.innerText = 'non-existent/'; // hardcoded because unavailable to trigger change on node
     const result = await listener.replaceHtml(elem, 16);
     const expected = '<p>non-existent/</p>';
     expect(elem.innerHTML).toBe(expected);
-    expect(result).toBe(-1);
+    expect(result.innerHTML).toBe(expected);
   });
 
   // TODO: add testing library to effectively simulate button actions

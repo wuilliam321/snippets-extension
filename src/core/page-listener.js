@@ -61,14 +61,14 @@ function PageListener(cfg) {
       return Promise.resolve(element);
     }
 
-    console.log('editable pos', oneIndexCaretPosition);
-    console.log('editable element.innerText', element.innerText);
-    console.log('editable element.innerHTML', element.innerHTML);
+    //console.log('editable pos', oneIndexCaretPosition);
+    //console.log('editable element.innerText', element.innerText);
+    //console.log('editable element.innerHTML', element.innerHTML);
     let prevText = element.innerText;
     if (oneIndexCaretPosition > 0) {
       prevText = element.innerText.slice(0, oneIndexCaretPosition);
     }
-    console.log('prev', prevText, parser.parseTextToHtml(prevText));
+    //console.log('prev', prevText, parser.parseTextToHtml(prevText));
 
     const foundShortcode = await getShortcode(prevText);
     // TODO: move cfg dependecy out of here
@@ -76,9 +76,9 @@ function PageListener(cfg) {
     //
     // TODO aqui voy algo da -1 no se que es (tiene que ver con los content edible
     // aquuiiiiii
-    console.log('foundSnippet', foundSnippet);
+    //console.log('foundSnippet', foundSnippet);
     if (foundSnippet === -1) {
-      return Promise.resolve(-1);
+      return Promise.resolve(element);
     }
     const tempText = element.innerHTML.replace(
       foundSnippet.shortcode + triggerKey,
@@ -97,8 +97,8 @@ function PageListener(cfg) {
       return Promise.resolve(element);
     }
 
-    console.log('pos', oneIndexCaretPosition);
-    console.log('element.value', element.value);
+    //console.log('pos', oneIndexCaretPosition);
+    //console.log('element.value', element.value);
     let prevText = element.value;
     let nextText = '';
     if (oneIndexCaretPosition > 0) {
@@ -110,7 +110,7 @@ function PageListener(cfg) {
     // TODO: move cfg dependecy out of here
     const foundSnippet = await cfg.getSnippetByShortcode(foundShortcode);
     if (foundSnippet === -1) {
-      return Promise.resolve(-1);
+      return Promise.resolve(element);
     }
     const tempText = prevText.replace(
       foundSnippet.shortcode + triggerKey,

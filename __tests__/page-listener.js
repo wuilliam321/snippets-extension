@@ -186,6 +186,7 @@ describe('Detect shortcode', () => {
     elem.dispatchEvent(new InputEvent(eventName, { data: 'a' }));
     elem.dispatchEvent(new InputEvent(eventName, { data: '/' }));
     elem.innerHTML = '<p>gg aaa/ gg</p>'; // hardcoded because unavailable to trigger change on node
+    elem.innerText = 'gg aaa/ gg'; // hardcoded because unavailable to trigger change on node
     const result = await listener.replaceHtml(elem, 7);
     expect(result.innerHTML).toBe(
       '<p>gg </p><p><s>Strike</s></p><p><br></p><h1>Header 1</h1><ul><li>List</li><li class="ql-indent-1">List Padding</li></ul> gg<p></p>',
@@ -290,6 +291,15 @@ describe('Replacement', () => {
     expect(result.value).toBe('non-existent/');
   });
 
+  test('if repeated shortcode, replace last', async () => {
+    const elem = document.createElement('textarea');
+    elem.value = `a bb/ a bb/`;
+    const result = await listener.replacePlainText(elem, 11);
+    const expected = 'a bb/ a Strike\n\n\nHeader 2\n * List\n * List Padding';
+    expect(elem.value).toBe(expected);
+    expect(result.value).toBe(expected);
+  });
+
   // replaceHtml
 
   test('contenteditable if no element given sould throw error', async () => {
@@ -371,6 +381,18 @@ describe('Replacement', () => {
     elem.innerText = 'non-existent/'; // hardcoded because unavailable to trigger change on node
     const result = await listener.replaceHtml(elem, 16);
     const expected = '<p>non-existent/</p>';
+    expect(elem.innerHTML).toBe(expected);
+    expect(result.innerHTML).toBe(expected);
+  });
+
+  test('contenteditable if repeated shortcode, replace last', async () => {
+    const elem = document.createElement('div');
+    elem.setAttribute('contenteditable', true);
+    elem.innerHTML = '<p>a bb/ a bb/</p>'; // hardcoded because unavailable to trigger change on node
+    elem.innerText = 'a bb/ a bb/'; // hardcoded because unavailable to trigger change on node
+    const result = await listener.replaceHtml(elem, 14);
+    const expected =
+      '<p>a bb/ a </p><p><s>Strike</s></p><p><br></p><h1>Header 2</h1><ul><li>List</li><li class="ql-indent-1">List Padding</li></ul><p></p>';
     expect(elem.innerHTML).toBe(expected);
     expect(result.innerHTML).toBe(expected);
   });

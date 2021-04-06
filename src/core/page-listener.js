@@ -1,5 +1,17 @@
 import parser from './parser';
 
+if (!String.prototype.replaceLast) {
+    String.prototype.replaceLast = function(find, replace) {
+        var index = this.lastIndexOf(find);
+
+        if (index >= 0) {
+            return this.substring(0, index) + replace + this.substring(index + find.length);
+        }
+
+        return this.toString();
+    };
+}
+
 function PageListener(cfg) {
   const triggerKey = '/';
 
@@ -43,13 +55,21 @@ function PageListener(cfg) {
 
   const getShortcode = async (text) => {
     const snippetsMap = await cfg.getMapSnippets();
-    const possibleShortcodes = getPossibleShortcodes(text);
-    for (let i = 0; i <= possibleShortcodes.length; i++) {
-      if (snippetsMap[possibleShortcodes[i]] !== undefined) {
-        return possibleShortcodes[i].replace('/', '');
-      }
+    const textParts = text.split(/(\s+)/);
+    const shortcodeWithTriggerKey = textParts[textParts.length - 1];
+    if (snippetsMap[shortcodeWithTriggerKey] !== undefined) {
+      return Promise.resolve(shortcodeWithTriggerKey.replace('/', ''));
     }
-    return '';
+    return Promise.resolve('');
+
+    // const snippetsMap = await cfg.getMapSnippets();
+    // const possibleShortcodes = getPossibleShortcodes(text);
+    // for (let i = 0; i <= possibleShortcodes.length; i++) {
+    //   if (snippetsMap[possibleShortcodes[i]] !== undefined) {
+    //     return possibleShortcodes[i].replace('/', '');
+    //   }
+    // }
+    // return '';
   };
 
   // TODO aqui voy, refactor esto que los metodos hacen todo lo mismo y estan feos
@@ -80,7 +100,7 @@ function PageListener(cfg) {
     if (foundSnippet === -1) {
       return Promise.resolve(element);
     }
-    const tempText = element.innerHTML.replace(
+    const tempText = element.innerHTML.replaceLast(
       foundSnippet.shortcode + triggerKey,
       // parser.parseHtmlToText(foundSnippet.text), // TODO remove this parser in given websites like linked in chat messages
       foundSnippet.text,
@@ -101,10 +121,15 @@ function PageListener(cfg) {
     //console.log('element.value', element.value);
     let prevText = element.value;
     let nextText = '';
-    if (oneIndexCaretPosition > 0) {
-      prevText = element.value.slice(0, oneIndexCaretPosition);
-      nextText = element.value.slice(oneIndexCaretPosition, element.value.length);
+    // const blankSpaces = element.value.match(/\n/g).length;
+    const blankSpaces = 0;
+    const offset = oneIndexCaretPosition + blankSpaces;
+    console.log('offset', offset);
+    if (offset > 0) {
+      prevText = element.value.slice(0, offset);
+      nextText = element.value.slice(offset, element.value.length);
     }
+    console.log('prevText', prevText);
 
     const foundShortcode = await getShortcode(prevText);
     // TODO: move cfg dependecy out of here
@@ -112,7 +137,8 @@ function PageListener(cfg) {
     if (foundSnippet === -1) {
       return Promise.resolve(element);
     }
-    const tempText = prevText.replace(
+    // todo aqui vay con lo del replace
+    const tempText = prevText.replaceLast(
       foundSnippet.shortcode + triggerKey,
       parser.parseHtmlToText(foundSnippet.text),
     );

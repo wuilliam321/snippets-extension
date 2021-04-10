@@ -6,12 +6,6 @@ const store = storage(chrome.storage.sync);
 const cfg = settings(store);
 const listener = pageListener.PageListener(cfg);
 
-// TODO aqui voy tratando de capas pasar aqui un evet con callback y en el callback hacer lo que quiera con lo que consigo??? maybe???
-
-const inputEvent = (event) => {
-  console.log('input', event);
-};
-
 const replaceValue = async (event) => {
   const [element] = event.path;
   const editable = element.hasAttribute('contenteditable');
@@ -21,8 +15,7 @@ const replaceValue = async (event) => {
     if (listener.isTriggerKey(event.key)) {
       const result = await listener.replaceHtml(element, pos);
       if (result) {
-        // element.innerHTML = result.innerHTML;
-        element.dispatchEvent(new InputEvent('input', { data: 'a', bubbles: true }));
+        element.dispatchEvent(new InputEvent('input', { data: ' ', bubbles: true }));
       }
     }
   } else {
@@ -31,15 +24,13 @@ const replaceValue = async (event) => {
     if (listener.isTriggerKey(event.key)) {
       const result = await listener.replacePlainText(element, pos);
       if (result) {
-        // element.value = result.value;
-        element.dispatchEvent(new InputEvent('input', { data: 'a', bubbles: true }));
+        element.dispatchEvent(new InputEvent('input', { data: ' ', bubbles: true }));
       }
     }
   }
 };
 
 document.addEventListener('keyup', replaceValue);
-document.addEventListener('input', inputEvent);
 
 chrome.runtime.sendMessage({ text: 'esto es desde cs' }, function (response) {
   console.log('Response: ', response);

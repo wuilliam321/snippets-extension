@@ -19,9 +19,12 @@ const store = storage(chrome.storage.sync);
 const cfg = settings(store);
 
 export default Vue.extend({
-  async mounted() {
+  mounted() {
+    const load = async () => {
+      await cfg.fetchSnippets();
+    };
+    load();
     // TODO: we need in some way pull this in a polling
-    await cfg.fetchSnippets();
   },
   methods: {
     async doLogout(event) {

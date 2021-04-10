@@ -24,7 +24,7 @@ const OPTIONS = {
 
 function Parser() {
   const createTemplateFromHTML = (htmlText) => {
-    const el = document.createElement('template');
+    const el = document.createElement('div');
     el.innerHTML = htmlText;
     return el;
   };
@@ -36,7 +36,7 @@ function Parser() {
     }
 
     const el = createTemplateFromHTML(htmlText);
-    return el.content;
+    return el;
   };
 
   const parseHtmlToText = (html) => {

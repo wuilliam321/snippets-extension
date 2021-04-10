@@ -26,7 +26,10 @@
 import Vue from 'vue';
 import Loader from './Loader.vue';
 import validator from '../core/validator';
+import storage from '../core/storage';
 import api from '../core/api';
+
+const store = storage(chrome.storage.sync);
 
 export default Vue.extend({
   components: {
@@ -53,15 +56,19 @@ export default Vue.extend({
 
       // hacer POST al login
       try {
-        const data = await api.login(this.email, this.password);
+        const loginData = await api.login(this.email, this.password);
+        await store.set('auth', { access_token: loginData.access_token, token_type: loginData.token_type });
+
+        const userInfo = await api.userInfo();
+        await store.set('userInfo', userInfo);
+
         // mostrar el dashboard con el boton logout, (no quiero el form)
 
         // guardar el token en la pc
         // TODO: move to a storage.service.js storage.set('token', token);
-        chrome.storage.sync.set(
-          { access_token: data.access_token, user: data.user, token_type: data.token_type },
-          () => {},
-        );
+        console.log('loginData', loginData);
+        console.log('userInfo', userInfo);
+
         this.$router.push('/dashboard');
         this.isLoading = false;
       } catch (err) {

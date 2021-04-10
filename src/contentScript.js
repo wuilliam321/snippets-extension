@@ -17,19 +17,21 @@ const replaceValue = async (event) => {
   const editable = element.hasAttribute('contenteditable');
   if (editable) {
     const pos = listener.getCaretCharacterOffsetWithin(element);
+    console.log('editable pos', pos);
     if (listener.isTriggerKey(event.key)) {
       const result = await listener.replaceHtml(element, pos);
-      if (result !== -1) {
-        element.innerHTML = result.innerHTML;
+      if (result) {
+        // element.innerHTML = result.innerHTML;
         element.dispatchEvent(new InputEvent('input', { data: 'a', bubbles: true }));
       }
     }
   } else {
     const pos = element.selectionEnd;
+    console.log('pos', pos);
     if (listener.isTriggerKey(event.key)) {
       const result = await listener.replacePlainText(element, pos);
-      if (result !== -1) {
-        element.value = result.value;
+      if (result) {
+        // element.value = result.value;
         element.dispatchEvent(new InputEvent('input', { data: 'a', bubbles: true }));
       }
     }

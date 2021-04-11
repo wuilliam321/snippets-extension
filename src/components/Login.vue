@@ -66,8 +66,6 @@ export default Vue.extend({
 
         // guardar el token en la pc
         // TODO: move to a storage.service.js storage.set('token', token);
-        console.log('loginData', loginData);
-        console.log('userInfo', userInfo);
 
         this.$router.push('/dashboard');
         this.isLoading = false;

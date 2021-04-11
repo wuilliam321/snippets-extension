@@ -176,9 +176,6 @@ function PageListener(cfg) {
     if (foundSnippet === -1) {
       return Promise.resolve(element);
     }
-    const start = element.selectionStart;
-    const end = element.selectionEnd;
-    console.log('start, end', start, end);
     pasteTextAtCaret(
       element,
       foundShortcode + triggerKey,

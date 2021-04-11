@@ -344,8 +344,7 @@ describe('Replacement', () => {
     elem.setAttribute('contenteditable', true);
     elem.innerHTML = '<p>aa</p>'; // hardcoded because unavailable to trigger change on node
     elem.innerText = 'aa'; // hardcoded because unavailable to trigger change on node
-    const result = await listener.replaceHtml(elem, 5);
-    console.log('aqui result', result);
+    await listener.replaceHtml(elem, 5);
     const expected = '<p>aa</p>';
     expect(elem.innerHTML).toBe(expected);
   });

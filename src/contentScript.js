@@ -11,7 +11,6 @@ const replaceValue = async (event) => {
   const editable = element.hasAttribute('contenteditable');
   if (editable) {
     const pos = listener.getCaretCharacterOffsetWithin(element);
-    console.log('editable pos', pos);
     if (listener.isTriggerKey(event.key)) {
       const result = await listener.replaceHtml(element, pos);
       if (result) {
@@ -20,7 +19,6 @@ const replaceValue = async (event) => {
     }
   } else {
     const pos = element.selectionEnd;
-    console.log('pos', pos);
     if (listener.isTriggerKey(event.key)) {
       const result = await listener.replacePlainText(element, pos);
       if (result) {

@@ -99,22 +99,33 @@ function PageListener(cfg) {
     document.getSelection().addRange(range);
   };
 
+  const pasteTextAtCaret = (el, sc, newText) => {
+    const start = el.selectionStart;
+    const text = el.value;
+    let before = text.substring(0, start);
+    const after = text.substring(start, text.length);
+    before = before.replaceLast(sc, '');
+    el.value = before + newText + after;
+    el.selectionStart = el.selectionEnd = start + newText.length - sc.length;
+    el.focus();
+  };
+
   const findShortcode = () => {
     let wordParts = [];
     let sel = window.getSelection();
     let range = new Range();
     const originalOffset = sel.focusOffset;
     for (let i = sel.focusOffset; i >= 1; i--) {
-      range.setStart(sel.focusNode, i - 1); 
-      range.setEnd(sel.focusNode, i); 
+      range.setStart(sel.focusNode, i - 1);
+      range.setEnd(sel.focusNode, i);
       const currentChar = range.cloneContents().textContent;
       if (currentChar === ' ') {
         break;
       }
       wordParts.push(currentChar);
     }
-    range.setStart(sel.focusNode, originalOffset); 
-    range.setEnd(sel.focusNode, originalOffset); 
+    range.setStart(sel.focusNode, originalOffset);
+    range.setEnd(sel.focusNode, originalOffset);
 
     document.getSelection().removeAllRanges();
     document.getSelection().addRange(range);
@@ -132,14 +143,14 @@ function PageListener(cfg) {
       oneIndexCaretPosition = 0;
     }
 
-    const txt = findShortcode(element, oneIndexCaretPosition);
-    const foundShortcode = await getShortcode(txt);
+    const shortcodeText = findShortcode();
+    const foundShortcode = await getShortcode(shortcodeText);
     const foundSnippet = await cfg.getSnippetByShortcode(foundShortcode);
     if (foundSnippet === -1) {
       return Promise.resolve(element);
     }
-    selectShortcode(txt);
-    pasteHtmlAtCaret(foundSnippet.text, element);
+    selectShortcode(shortcodeText);
+    pasteHtmlAtCaret(foundSnippet.text);
     return Promise.resolve(element);
   };
 
@@ -155,12 +166,9 @@ function PageListener(cfg) {
     }
 
     let prevText = element.value;
-    let nextText = '';
-    const blankSpaces = 0;
-    const offset = oneIndexCaretPosition + blankSpaces;
+    const offset = oneIndexCaretPosition;
     if (offset > 0) {
       prevText = element.value.slice(0, offset);
-      nextText = element.value.slice(offset, element.value.length);
     }
 
     const foundShortcode = await getShortcode(prevText);
@@ -168,11 +176,14 @@ function PageListener(cfg) {
     if (foundSnippet === -1) {
       return Promise.resolve(element);
     }
-    const tempText = prevText.replaceLast(
-      foundSnippet.shortcode + triggerKey,
+    const start = element.selectionStart;
+    const end = element.selectionEnd;
+    console.log('start, end', start, end);
+    pasteTextAtCaret(
+      element,
+      foundShortcode + triggerKey,
       parser.parseHtmlToText(foundSnippet.text),
     );
-    element.value = tempText + nextText;
     return Promise.resolve(element);
   };
 

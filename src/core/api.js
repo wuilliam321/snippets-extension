@@ -9,12 +9,12 @@ async function login(email, password) {
     });
     return res.data;
   } catch (err) {
-    console.log(err);
     let error = {
       status: 'unknown',
       data: {
         message: 'Unknown',
       },
+      error: err,
     };
     if (err && err.response) {
       error = err.response;
@@ -32,12 +32,12 @@ async function userInfo() {
     });
     return res.data;
   } catch (err) {
-    console.log(err);
     let error = {
       status: 'unknown',
       data: {
         message: 'Unknown',
       },
+      error: err,
     };
     if (err && err.response) {
       error = err.response;
@@ -46,10 +46,9 @@ async function userInfo() {
   }
 }
 
-
 async function getAuthInfo() {
   return new Promise((resolve) => {
-    chrome.storage.sync.get(['auth'], ({auth}) => {
+    chrome.storage.sync.get(['auth'], ({ auth }) => {
       resolve(auth);
     });
   });
@@ -57,7 +56,7 @@ async function getAuthInfo() {
 
 async function getUserInfo() {
   return new Promise((resolve) => {
-    chrome.storage.sync.get(['userInfo'], ({userInfo}) => {
+    chrome.storage.sync.get(['userInfo'], ({ userInfo }) => {
       resolve(userInfo);
     });
   });
@@ -73,12 +72,12 @@ async function getSnippets() {
     });
     return res.data;
   } catch (err) {
-    console.log(err);
     let error = {
       status: 'unknown',
       data: {
         message: 'Unknown',
       },
+      error: err,
     };
     if (err && err.response) {
       error = err.response;

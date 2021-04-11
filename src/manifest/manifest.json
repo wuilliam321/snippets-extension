@@ -15,7 +15,7 @@
       "js": ["contentScript.js"]
     }
   ],
-  "permissions": ["storage", "tabs", "activeTab", "scripting", "<all_urls>"],
+  "permissions": ["storage", "tabs", "activeTab", "scripting"],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {

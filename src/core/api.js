@@ -1,6 +1,4 @@
-const Api = ({ store, http }) => {
-  // TODO: store does not belongs to thiss, passs token, instead
-
+const Api = ({ http }) => {
   async function login(email, password) {
     try {
       const url = 'https://app.capijzo.com/api/auth/login';
@@ -26,13 +24,8 @@ const Api = ({ store, http }) => {
 
   async function userInfo() {
     try {
-      const authInfo = await store.get('auth');
-      esto esta mal
-      console.log('auth', authInfo);
       const url = 'https://app.capijzo.com/api/auth/user';
-      const res = await http.get(url, {
-        headers: { Authorization: authInfo.token_type + ' ' + authInfo.access_token },
-      });
+      const res = await http.get(url);
       return res.data;
     } catch (err) {
       let error = {
@@ -52,11 +45,8 @@ const Api = ({ store, http }) => {
   // TODO: pass the user info in params instead
   async function getSnippets(userId) {
     try {
-      const authInfo = await store.get('auth');
       const url = 'https://app.capijzo.com/api/v1/snippets?user_id=' + userId;
-      const res = await http.get(url, {
-        headers: { Authorization: authInfo.token_type + ' ' + authInfo.access_token },
-      });
+      const res = await http.get(url);
       return res.data;
     } catch (err) {
       let error = {

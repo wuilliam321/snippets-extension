@@ -12,16 +12,20 @@
 
 <script>
 import Vue from 'vue';
-import settings from '../core/settings';
-import storage from '../core/storage';
+import axios from 'axios';
+import App from '../core/app';
+import Api from '../core/api';
 
-const store = storage(chrome.storage.sync);
-const cfg = settings(store);
+const options = {
+  store: chrome.storage.sync,
+  api: Api({ store: chrome.storage.sync, http: axios }),
+};
+const app = App(options); // TODO: move it to a global scope
 
 export default Vue.extend({
   mounted() {
     const load = async () => {
-      await cfg.fetchSnippets();
+      await app.loadSnippets();
     };
     load();
     // TODO: we need in some way pull this in a polling
@@ -29,9 +33,12 @@ export default Vue.extend({
   methods: {
     async doLogout(event) {
       event.preventDefault();
-      chrome.storage.sync.remove('access_token', () => {
+      try {
+        await app.logout();
         this.$router.push('/');
-      });
+      } catch (err) {
+        this.$router.push('/');
+      }
 
       // Here will go the logout process
       // Remove token

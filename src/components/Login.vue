@@ -24,12 +24,18 @@
 
 <script>
 import Vue from 'vue';
+import axios from 'axios'; // TODO move it out here
 import Loader from './Loader.vue';
 import validator from '../core/validator';
-import storage from '../core/storage';
-import api from '../core/api';
+import App from '../core/app';
+import Api from '../core/api';
+import Storage from '../core/storage';
 
-const store = storage(chrome.storage.sync);
+const options = {
+  store: Storage({ service: chrome.storage.sync }),
+  api: Api({ store: chrome.storage.sync, http: axios }),
+};
+const app = App(options); // TODO: move it to a global scope
 
 export default Vue.extend({
   components: {
@@ -46,30 +52,20 @@ export default Vue.extend({
   methods: {
     async doLogin(event) {
       event.preventDefault();
-      this.isLoading = true;
-      this.showError = false;
-
       if (!validator.isValidForm(this.email, this.password)) {
         this.showError = true;
         return;
       }
 
-      // hacer POST al login
+      this.isLoading = true;
+      this.showError = false;
       try {
-        const loginData = await api.login(this.email, this.password);
-        await store.set('auth', { access_token: loginData.access_token, token_type: loginData.token_type });
-
-        const userInfo = await api.userInfo();
-        await store.set('userInfo', userInfo);
-
-        // mostrar el dashboard con el boton logout, (no quiero el form)
-
-        // guardar el token en la pc
-        // TODO: move to a storage.service.js storage.set('token', token);
+        await app.login(this.email, this.password);
 
         this.$router.push('/dashboard');
         this.isLoading = false;
       } catch (err) {
+        console.error('err', err);
         this.showError = true;
         this.isLoading = false;
       }

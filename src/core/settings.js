@@ -1,6 +1,4 @@
-import api from './api';
-
-function Settings(store) {
+function Settings({ store, api }) {
   const triggerKey = '/'; // TODO: Repeated code
 
   if (!store) {
@@ -8,65 +6,79 @@ function Settings(store) {
   }
 
   const getSnippetByShortcode = async (shortcode) => {
-    if (!shortcode) {
-      return Promise.resolve(-1);
+    try {
+      if (!shortcode) {
+        return -1;
+      }
+
+      const snippets = await getSnippets();
+      const snippet = snippets.find((s) => s.shortcode === shortcode);
+
+      if (!snippet) {
+        return -1;
+      }
+
+      return snippet;
+    } catch (err) {
+      throw err;
     }
-
-    const snippets = await getSnippets();
-    const snippet = snippets.find((s) => s.shortcode === shortcode);
-
-    if (!snippet) {
-      return Promise.resolve(-1);
-    }
-
-    return Promise.resolve(snippet);
   };
 
   const setSnippets = async (snippets) => {
-    if (snippets === undefined) {
-      return Promise.resolve([]);
-    }
-    if (snippets && snippets.length) {
-      const res = await store.set('snippets', snippets);
-      if (Object.keys(res).length) {
-        // TODO not tested
-        return Promise.resolve(res.snippets);
+    try {
+      if (snippets === undefined) {
+        return [];
       }
+      if (snippets && snippets.length) {
+        const res = await store.set('snippets', snippets);
+        if (Object.keys(res).length) {
+          // TODO not tested
+          return res.snippets;
+        }
+      }
+      return [];
+    } catch (err) {
+      throw err;
     }
-    return Promise.resolve([]);
   };
 
   const getMapSnippets = async () => {
-    const snippets = await getSnippets();
-    const snippetsMap = snippets.reduce((prev, curr) => {
-      prev[curr.shortcode + triggerKey] = curr;
-      return prev;
-    }, {});
-    return snippetsMap
+    try {
+      const snippets = await getSnippets();
+      const snippetsMap = snippets.reduce((prev, curr) => {
+        prev[curr.shortcode + triggerKey] = curr;
+        return prev;
+      }, {});
+      return snippetsMap;
+    } catch (err) {
+      throw err;
+    }
   };
 
   const getSnippets = async () => {
     // TODO not tested
-    const res = await store.get('snippets');
-    if (!res || !res.snippets) {
-      return Promise.resolve([]);
+    try {
+      const res = await store.get('snippets');
+      if (!res || !res.snippets) {
+        return [];
+      }
+      return res.snippets;
+    } catch (err) {
+      throw err;
     }
-    return Promise.resolve(res.snippets);
   };
 
-  const fetchSnippets = () => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const data = await api.getSnippets();
-        if (data) {
-          await setSnippets(data);
-          resolve(data);
-        }
-        resolve([]);
-      } catch (err) {
-        reject(err);
+  const fetchSnippets = async (userId) => {
+    try {
+      const data = await api.getSnippets(userId);
+      if (data) {
+        await setSnippets(data);
+        return data;
       }
-    });
+      return [];
+    } catch (err) {
+      throw err;
+    }
   };
 
   return {

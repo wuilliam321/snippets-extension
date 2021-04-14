@@ -1,9 +1,7 @@
 import pageListener from '../src/core/page-listener';
 import settings from '../src/core/settings';
-import storage from '../src/core/storage';
 
-const store = storage(chrome.storage.sync);
-const cfg = settings(store);
+const cfg = settings();
 const listener = pageListener.PageListener(cfg);
 
 const replaceValue = async (event) => {

@@ -48,13 +48,17 @@ function PageListener(cfg) {
   };
 
   const getShortcode = async (text) => {
-    const snippetsMap = await cfg.getMapSnippets();
-    const textParts = text.split(/(\s+)/);
-    const shortcodeWithTriggerKey = textParts[textParts.length - 1];
-    if (snippetsMap[shortcodeWithTriggerKey] !== undefined) {
-      return Promise.resolve(shortcodeWithTriggerKey.replace('/', ''));
+    try {
+      const snippetsMap = await cfg.getMapSnippets();
+      const textParts = text.split(/(\s+)/);
+      const shortcodeWithTriggerKey = textParts[textParts.length - 1];
+      if (snippetsMap[shortcodeWithTriggerKey] !== undefined) {
+        return shortcodeWithTriggerKey.replace('/', '');
+      }
+      return '';
+    } catch (err) {
+      throw err;
     }
-    return Promise.resolve('');
   };
 
   function pasteHtmlAtCaret(html) {
@@ -133,55 +137,63 @@ function PageListener(cfg) {
   };
 
   const replaceHtml = async (element, oneIndexCaretPosition) => {
-    if (!element) {
-      return Promise.reject('element is required');
-    }
-    if (element.innerHTML === undefined) {
-      return Promise.resolve(element);
-    }
-    if (!oneIndexCaretPosition) {
-      oneIndexCaretPosition = 0;
-    }
+    try {
+      if (!element) {
+        throw new Error('element is required');
+      }
+      if (element.innerHTML === undefined) {
+        return element;
+      }
+      if (!oneIndexCaretPosition) {
+        oneIndexCaretPosition = 0;
+      }
 
-    const shortcodeText = findShortcode();
-    const foundShortcode = await getShortcode(shortcodeText);
-    const foundSnippet = await cfg.getSnippetByShortcode(foundShortcode);
-    if (foundSnippet === -1) {
-      return Promise.resolve(element);
+      const shortcodeText = findShortcode();
+      const foundShortcode = await getShortcode(shortcodeText);
+      const foundSnippet = await cfg.getSnippetByShortcode(foundShortcode);
+      if (foundSnippet === -1) {
+        return element;
+      }
+      selectShortcode(shortcodeText);
+      pasteHtmlAtCaret(foundSnippet.text);
+      return element;
+    } catch (err) {
+      throw err;
     }
-    selectShortcode(shortcodeText);
-    pasteHtmlAtCaret(foundSnippet.text);
-    return Promise.resolve(element);
   };
 
   const replacePlainText = async (element, oneIndexCaretPosition) => {
-    if (!element) {
-      return Promise.reject('element is required');
-    }
-    if (element.value === undefined) {
-      return Promise.resolve(element);
-    }
-    if (!oneIndexCaretPosition) {
-      oneIndexCaretPosition = 0;
-    }
+    try {
+      if (!element) {
+        throw new Error('element is required');
+      }
+      if (element.value === undefined) {
+        return element;
+      }
+      if (!oneIndexCaretPosition) {
+        oneIndexCaretPosition = 0;
+      }
 
-    let prevText = element.value;
-    const offset = oneIndexCaretPosition;
-    if (offset > 0) {
-      prevText = element.value.slice(0, offset);
-    }
+      let prevText = element.value;
+      const offset = oneIndexCaretPosition;
+      if (offset > 0) {
+        prevText = element.value.slice(0, offset);
+      }
 
-    const foundShortcode = await getShortcode(prevText);
-    const foundSnippet = await cfg.getSnippetByShortcode(foundShortcode);
-    if (foundSnippet === -1) {
-      return Promise.resolve(element);
+      const foundShortcode = await getShortcode(prevText);
+      const foundSnippet = await cfg.getSnippetByShortcode(foundShortcode);
+      if (foundSnippet === -1) {
+        return element;
+      }
+      pasteTextAtCaret(
+        element,
+        foundShortcode + triggerKey,
+        parser.parseHtmlToText(foundSnippet.text),
+      );
+      return element;
+    } catch (err) {
+      throw err;
     }
-    pasteTextAtCaret(
-      element,
-      foundShortcode + triggerKey,
-      parser.parseHtmlToText(foundSnippet.text),
-    );
-    return Promise.resolve(element);
   };
 
   return {

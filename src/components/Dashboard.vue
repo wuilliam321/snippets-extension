@@ -12,30 +12,11 @@
 
 <script>
 import Vue from 'vue';
-import axios from 'axios';
-import App from '../core/app';
-import Api from '../core/api';
-import Storage from '../core/storage';
-
-const store = Storage({ service: chrome.storage.sync });
-
-axios.interceptors.request.use(async (config) => {
-  const { auth } = await store.get('auth');
-  config.headers.Authorization = auth.token_type + ' ' + auth.access_token;
-  return config;
-});
-
-const options = {
-  store: store,
-  api: Api({ http: axios }),
-};
-
-const app = App(options); // TODO: move it to a global scope
 
 export default Vue.extend({
   mounted() {
     const load = async () => {
-      await app.loadSnippets();
+      await this.app.loadSnippets();
     };
     load();
     // TODO: we need in some way pull this in a polling
@@ -44,7 +25,7 @@ export default Vue.extend({
     async doLogout(event) {
       event.preventDefault();
       try {
-        await app.logout();
+        await this.app.logout();
         this.$router.push('/');
       } catch (err) {
         this.$router.push('/');

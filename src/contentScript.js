@@ -4,8 +4,6 @@ import Settings from '../src/core/settings';
 import Storage from '../src/core/storage';
 import Api from '../src/core/api';
 
-// https://stackoverflow.com/a/9439525
-
 // TODO: maybe all this info could be provided throuh background js and keep it small
 axios.interceptors.request.use(async (config) => {
   const { auth } = await store.get('auth');
@@ -44,8 +42,27 @@ const replaceValue = async (event) => {
     }
   }
 };
-
 document.addEventListener('keyup', replaceValue, true);
+
+// https://stackoverflow.com/a/9439525
+// TODO: Try this to verify if performance is affected
+// (function checkForNewIframe(doc) {
+//     if (!doc) return; // document does not exist. Cya
+//     doc.addEventListener('keyup', replaceValue, true);
+//     doc.hasSeenDocument = true;
+//     for (var i = 0, contentDocument; i<frames.length; i++) {
+//         try {
+//             contentDocument = iframes[i].document;
+//         } catch (e) {
+//             continue; // Same-origin policy violation?
+//         }
+//         if (contentDocument && !contentDocument.hasSeenDocument) {
+//             // Add poller to the new iframe
+//             checkForNewIframe(iframes[i].contentDocument);
+//         }
+//     }
+//     setTimeout(checkForNewIframe, 250, doc); // <-- delay of 1/4 second
+// })(document); // Initiate recursive function for the document.
 
 chrome.runtime.sendMessage({ text: 'esto es desde cs' }, function (response) {
   console.log('Response: ', response);

@@ -26,6 +26,7 @@ function App({ store, api }) {
     try {
       const userInfo = await api.userInfo();
       const snippets = await api.getSnippets(userInfo.id);
+      await store.set('snippets', snippets);
       return snippets;
     } catch (err) {
       throw err;

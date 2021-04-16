@@ -18,6 +18,25 @@ const api = Api({ http: axios });
 const cfg = Settings({ store, api });
 const listener = pageListener.PageListener(cfg);
 
+const openWindow = (event, source) => {
+  const body = event.path.filter((e) => e instanceof HTMLBodyElement);
+  console.log('open', body, source, event.path);
+  if (body.length) {
+    const dialog = document.createElement('div');
+    dialog.setAttribute(
+      'style',
+      'z-index: 90000;   margin: auto; position: absolute; top: 0; left: 0; bottom: 0; right: 0; width: 200px; height: 200px; background-color: blue;',
+    );
+    dialog.innerText = 'test';
+    const iframe = document.createElement('iframe');
+    iframe.setAttribute('src', 'https://www.w3schools.com');
+    iframe.setAttribute('width', '200px');
+    iframe.setAttribute('height', '200px');
+    dialog.append(iframe);
+    body[0].append(dialog);
+  }
+};
+
 const replaceValue = async (event) => {
   const [element] = event.path;
   console.log('element', element);
@@ -26,6 +45,7 @@ const replaceValue = async (event) => {
     const pos = listener.getCaretCharacterOffsetWithin(element);
     console.log('pos', pos);
     if (listener.isTriggerKey(event.key)) {
+      // openWindow(event, 'editable');
       const result = await listener.replaceHtml(element, pos);
       if (result) {
         element.dispatchEvent(new InputEvent('input', { data: ' ', bubbles: true }));
@@ -35,6 +55,7 @@ const replaceValue = async (event) => {
     const pos = element.selectionEnd;
     console.log('pos', pos);
     if (listener.isTriggerKey(event.key)) {
+      // openWindow(event, 'textarea');
       const result = await listener.replacePlainText(element, pos);
       if (result) {
         element.dispatchEvent(new InputEvent('input', { data: ' ', bubbles: true }));
@@ -67,4 +88,10 @@ document.addEventListener('keyup', replaceValue, true);
 chrome.runtime.sendMessage({ text: 'esto es desde cs' }, function (response) {
   console.log('Response: ', response);
   // parser.parseTextToHtml();
+});
+
+fetch(chrome.runtime.getURL('/dialog.html')).then(r => r.text()).then(html => {
+  document.body.insertAdjacentHTML('beforeend', html);
+  // aqui voy, intentando injectar un html, y luego levantar una vue app ahi, sera posible?
+  // not using innerHTML as it would break js event listeners of the page
 });
